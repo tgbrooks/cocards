@@ -6,7 +6,7 @@
 [node name="Main" type="Node2D" unique_id=952264028]
 script = ExtResource("1_h2yge")
 
-[node name="EndTurnButton" type="Button" parent="." unique_id=889740436]
+[node name="GoButton" type="Button" parent="." unique_id=889740436]
 offset_left = 1033.0
 offset_top = 587.0
 offset_right = 1117.0
@@ -16,23 +16,23 @@ text = "Go"
 [node name="Hand" parent="." unique_id=1347812936 instance=ExtResource("2_0xm2m")]
 position = Vector2(84, 435)
 
-[node name="HealthText" type="Label" parent="." unique_id=753321561]
+[node name="HeatText" type="Label" parent="." unique_id=753321561]
 offset_left = 1000.0
 offset_top = 35.0
 offset_right = 1040.0
 offset_bottom = 58.0
 
-[node name="ChargesText" type="Label" parent="." unique_id=342088565]
+[node name="OilText" type="Label" parent="." unique_id=342088565]
 offset_left = 1000.0
 offset_top = 75.0
 offset_right = 1040.0
 offset_bottom = 100.0
 
-[node name="CoinsText" type="Label" parent="." unique_id=1223239778]
+[node name="WorkText" type="Label" parent="." unique_id=1864009568]
 offset_left = 1000.0
-offset_top = 105.0
+offset_top = 118.0
 offset_right = 1040.0
-offset_bottom = 128.0
+offset_bottom = 143.0
 
-[connection signal="pressed" from="EndTurnButton" to="." method="_on_end_turn_button_pressed"]
+[connection signal="pressed" from="GoButton" to="." method="_on_go_button_pressed"]
 [connection signal="card_selected" from="Hand" to="Hand" method="_on_card_selected"]

@@ -10,23 +10,18 @@ func _process(_delta: float) -> void:
 	pass
 	
 func make_card_by_name(card_name: String, main: Main) -> Card:
-	var reward_1g = func():
-		main.gain_coins.emit(1)
-	var reward_1c = func():
-		main.gain_charges.emit(1)
 	var card = Card.new()
 	card.card_name = card_name
-	if card_name == 'smite':
-		card.attack = 1
-		card.defense = 1
-		card.played.connect(func(enemy): enemy.defeated.connect(reward_1g))
-	elif card_name == 'shield':
-		card.attack = 0
-		card.defense = 2
-		card.played.connect(func(enemy): enemy.defeated.connect(reward_1c))
-	elif card_name == 'magic_missile':
-		card.attack = 2
-		card.defense = 0
+	if card_name == 'lever':
+		card.work = 1
+		card.oil = 1
+	elif card_name == 'force':
+		card.heat = 1
+		card.work = 1
+		card.oil = 1
+	elif card_name == 'lubricate':
+		card.oil = 2
+		card.heat = 1
 	else:
 		print("Unrecognized card name", card_name)
 		return null

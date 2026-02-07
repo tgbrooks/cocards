@@ -12,7 +12,7 @@ func _ready() -> void:
 
 func make_deck(main:Main) -> void:
 	var library = CardLibrary.new()
-	for enemy_name in ["smite", "smite", "shield", "magic_missile", "magic_missile"]:
+	for enemy_name in ["lever", "lever", "force", "force", "lubricate"]:
 		deck.append(library.make_card_by_name(enemy_name, main))
 
 
@@ -43,7 +43,16 @@ func position_hand() -> void:
 		pos += card.size.x + padding
 
 func _on_card_selected(card: Card) -> void:
-	card.select()
-	if selected_card:
+	if selected_card == card:
+		return
+	elif selected_card:
+		# Insert the previous selection into the new place
+		var old_idx = hand.find(selected_card)
+		hand.remove_at(old_idx)
+		var new_idx = hand.find(card)
+		hand.insert(new_idx, selected_card)
 		selected_card.unselect()
-	selected_card = card
+		selected_card = null
+	else:
+		card.select()
+		selected_card = card
