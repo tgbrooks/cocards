@@ -16,6 +16,10 @@ text = "Go"
 [node name="Hand" parent="." unique_id=1347812936 instance=ExtResource("2_0xm2m")]
 position = Vector2(84, 435)
 
+[node name="Hand2" parent="." unique_id=1102264940 instance=ExtResource("2_0xm2m")]
+position = Vector2(84, 539)
+player = "computer"
+
 [node name="HeatText" type="Label" parent="." unique_id=753321561]
 offset_left = 1000.0
 offset_top = 35.0
@@ -36,3 +40,4 @@ offset_bottom = 143.0
 
 [connection signal="pressed" from="GoButton" to="." method="_on_go_button_pressed"]
 [connection signal="card_selected" from="Hand" to="Hand" method="_on_card_selected"]
+[connection signal="card_selected" from="Hand2" to="Hand2" method="_on_card_selected"]

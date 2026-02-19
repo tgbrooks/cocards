@@ -4,7 +4,8 @@ signal card_selected(card: Card)
 var hand: Array[Card] = []
 var padding = 10
 var selected_card: Card = null
-var deck: Array[Card] = []
+@export var deck: Array[Card] = []
+@export var player: String = "human"
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:

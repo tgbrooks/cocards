@@ -3,16 +3,17 @@ class_name Main extends Node2D
 const MAX_PLAYER_OIL = 3
 const MAX_PLAYER_HEAT = 5
 
-var state = "order_hand"
-var selected_card = null
-var played_cards: Array[CardStack] = []
-var objectives: Array[Objective] = []
-var player_oil: int = 0
-var player_heat: int = 0
-var player_work: int = 0
+@export var state = "order_hand"
+@export var selected_card = null
+@export var played_cards: Array[CardStack] = []
+@export var objectives: Array[Objective] = []
+@export var player_oil: int = 0
+@export var player_heat: int = 0
+@export var player_work: int = 0
 @onready var heat_text:Label = $HeatText
 @onready var oil_text:Label = $OilText
 @onready var work_text:Label = $WorkText
+@export var active_player: String = "human"
 
 signal gain_oil(num_charges: int)
 signal gain_heat(num_coins: int)
@@ -34,7 +35,7 @@ func _ready() -> void:
 	update_work()
 
 	var objective_lib = ObjectiveLibrary.new()
-	var objective_names = ['grind', 'mash', 'stir']
+	var objective_names = ['stir', 'grind', 'mash', 'stir', 'mash']
 	for i in range(objective_names.size()):
 		var objective_name = objective_names[i]
 		var objective = objective_lib.make_objective_by_name(objective_name, self)
