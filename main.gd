@@ -1,111 +1,112 @@
 class_name Main extends Node2D
 
-const MAX_PLAYER_OIL = 3
-const MAX_PLAYER_HEAT = 5
-
-@export var state = "order_hand"
-@export var selected_card = null
+@export var player_health: int = 20
+@export var selected_cards: Array[Card] = []
+@export var selected_card_stack: CardStack = null
 @export var played_cards: Array[CardStack] = []
 @export var objectives: Array[Objective] = []
-@export var player_oil: int = 0
-@export var player_heat: int = 0
-@export var player_work: int = 0
-@onready var heat_text:Label = $HeatText
-@onready var oil_text:Label = $OilText
-@onready var work_text:Label = $WorkText
 @export var active_player: String = "human"
-
-signal gain_oil(num_charges: int)
-signal gain_heat(num_coins: int)
-signal gain_work(num_work: int)
+@export var enemy_action_points: int = 0
+@export var enemy_action_points_threshold: int = 3
+var card_stacks: Array[CardStack] = []
+var deck: Array[Card] = []
+signal enemy_action_points_changed(old_value: int, new_value: int)
+signal enemy_action_taken()
+signal player_damaged(old_health: int, new_health: int)
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	get_node("Hand").make_deck(self)
-	get_node("Hand").deal_hand()
-
-	gain_heat.connect(func(num): player_heat += num)
-	gain_heat.connect(func(_num): update_heat())
-	gain_oil.connect(func(num): player_oil += num)
-	gain_oil.connect(func(_num): update_oil())
-	gain_work.connect(func(num): player_work += num)
-	gain_work.connect(func(_num): update_work())
-	update_heat()
-	update_oil()
-	update_work()
-
-	var objective_lib = ObjectiveLibrary.new()
-	var objective_names = ['stir', 'grind', 'mash', 'stir', 'mash']
-	for i in range(objective_names.size()):
-		var objective_name = objective_names[i]
-		var objective = objective_lib.make_objective_by_name(objective_name, self)
-		objective.position = Vector2(i * 200, 200)
+	for i in range(3):
 		var cs = CardStack.new()
-		cs.reference = objective
-		played_cards.append(cs)
-		add_child(objective)
-		add_child(cs)
-		objectives.append(objective)
+		card_stacks.append(cs)
+		cs.position = Vector2(200*i+100, 300)
+		self.add_child(cs)
 		
+	var library = CardLibrary.new()
+	for card_name in ["one", "one", "one", "two", "two", "two", "three", "three", "three"]:
+		var card = library.make_card_by_name(card_name, self)
+		deck.append(card)
+		self.add_child(card)
+
+	deck.shuffle()
+
+	var i = 0
+	while true:
+		var card = deck.pop_back()
+		if not card:
+			break
+		card_stacks[i].append(card)
+		i = (i + 1) % card_stacks.size()
+
+	$EnemyArea.spawn_enemies()
+	enemy_action_points_changed.connect(_on_enemy_action_points_changed)
+	player_damaged.connect(_on_player_damaged)
+	player_damaged.emit(player_health, player_health)
+
+func _on_go_button_pressed() -> void:
+	pass
+
 func _process(_delta: float) -> void:
 	if Input.is_key_pressed(KEY_R):
 		# FOR DEBUG PURPOSES, RESTART GAME
 		get_tree().reload_current_scene()
-	
-func update_heat():
-	heat_text.text = "Heat: %s"% Util.format_heat(player_heat)
-	
-func update_oil():
-	oil_text.text = "Oil: %s" % Util.format_oil(player_oil)
-	
-func update_work():
-	work_text.text = "Work: %s" % Util.format_work(player_work)
 
-
-func finalize_hand_order() -> void:
-	pass
-	
-func play_card() -> void:
-	if not objectives:
-		return # nothing to play here
-		# TODO: advance to the next stage?
-
-	
-	var objective = objectives[0]
-	var card = get_node("Hand").hand.pop_front()
-	
-	if not card:
-		print("No more cards")
+func cards_activated(cards: Array[Card], card_stack: CardStack) -> void:
+	if not Card.can_chain(cards):
 		return
-		# TODO: logic for run out of cards?
-	card.queue_free()
+	if selected_card_stack != card_stack and selected_cards.size() > 0:
+		# Try playing the cards from the old stack onto the newly clicked stack
+		var bottom_card = cards[cards.size()-1]
+		var top_card = selected_cards[0]
+		if top_card.number == bottom_card.number - 1:
+			# move the cards onto the new stack
+			for card in selected_cards:
+				card.unselect()
+				card_stack.append(card)
+			selected_card_stack = null
+			selected_cards = []
+			return
 
-	gain_heat.emit(card.heat)
-	gain_oil.emit(card.oil)
-	gain_work.emit(card.work)
-	var satisfied = (player_heat >= objective.heat_cost and player_oil >= objective.oil_cost and player_work >= objective.work_cost)
-	if satisfied:
-		# TODO: should this not be handled by the 'gain_*' signals?
-		gain_heat.emit(-objective.heat_cost)
-		gain_oil.emit(-objective.oil_cost)
-		gain_work.emit(-objective.oil_cost)
-		objective.completed.emit()
-		player_work = 0
-		if player_oil > MAX_PLAYER_OIL:
-			player_oil = MAX_PLAYER_OIL
-			
-		if player_heat > MAX_PLAYER_HEAT:
-			print("!!!TOO MUCH HEAT!!!")
-		objectives.pop_front()
-		objective.queue_free()
-	else:
-		objective.ongoing.emit()
+	for card in selected_cards:
+		card.unselect()
+	selected_cards = cards
+	for card in selected_cards:
+		card.select()
+	selected_card_stack = card_stack
 
+func on_enemy_pressed(enemy: Enemy) -> void:
+	if selected_cards:
+		# Play selected cards on the enemy, starting from the bottom
+		for i in range(selected_cards.size()-1,-1,-1):
+			var card = selected_cards[i]
+			play_card(card, enemy)
+		gain_enemy_action_points(1)
+		selected_cards = []
+		selected_card_stack = null
 
+func play_card(card: Card, enemy: Enemy) -> void:
+	card.play(enemy)
+	var idx = selected_cards.find(card)
+	if idx >= 0:
+		selected_cards.pop_at(idx)
 
-func _on_go_button_pressed() -> void:
-	if state == "order_hand":
-		state = "play_cards"
-	else:
-		play_card()
-		# TODO: end stage logic, run out of cards logic
+func gain_enemy_action_points(points:int) -> void:
+	var old = enemy_action_points
+	enemy_action_points += points
+	enemy_action_points_changed.emit(old, enemy_action_points)
+	if enemy_action_points >= enemy_action_points_threshold:
+		old = enemy_action_points
+		enemy_action_points = 0
+		enemy_action_taken.emit()
+		enemy_action_points_changed.emit(old, enemy_action_points)
+
+func _on_enemy_action_points_changed(old, new) -> void:
+	$EnemyActions.text = "Action points: %s" % new
+
+func damage_player(damage: int) -> void:
+	var old = player_health
+	player_health -= damage
+	player_damaged.emit(old, player_health)
+
+func _on_player_damaged(old, new) -> void:
+	$PlayerHealthText.text = "Player health: %s" % new

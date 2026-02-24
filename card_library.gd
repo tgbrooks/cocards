@@ -12,16 +12,15 @@ func _process(_delta: float) -> void:
 func make_card_by_name(card_name: String, main: Main) -> Card:
 	var card = Card.new()
 	card.card_name = card_name
-	if card_name == 'lever':
-		card.work = 1
-		card.oil = 1
-	elif card_name == 'force':
-		card.heat = 1
-		card.work = 1
-		card.oil = 1
-	elif card_name == 'lubricate':
-		card.oil = 2
-		card.heat = 1
+	if card_name == 'one':
+		card.number = 1
+		card.suit = Enums.Suit.RED
+	elif card_name == 'two':
+		card.number = 2
+		card.suit = Enums.Suit.RED
+	elif card_name == 'three':
+		card.number = 3
+		card.suit = Enums.Suit.RED
 	else:
 		print("Unrecognized card name", card_name)
 		return null

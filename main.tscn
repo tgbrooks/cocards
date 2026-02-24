@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://cy6247bdk07ui"]
 
 [ext_resource type="Script" uid="uid://bg7dsimdwouw8" path="res://main.gd" id="1_h2yge"]
-[ext_resource type="PackedScene" uid="uid://d4wkh0npgnrb" path="res://hand.tscn" id="2_0xm2m"]
+[ext_resource type="Script" uid="uid://cwwbn2cbi1hh8" path="res://enemy_area.gd" id="2_0xm2m"]
 
 [node name="Main" type="Node2D" unique_id=952264028]
 script = ExtResource("1_h2yge")
@@ -13,31 +13,22 @@ offset_right = 1117.0
 offset_bottom = 618.0
 text = "Go"
 
-[node name="Hand" parent="." unique_id=1347812936 instance=ExtResource("2_0xm2m")]
-position = Vector2(84, 435)
+[node name="EnemyArea" type="Node2D" parent="." unique_id=301296856]
+position = Vector2(813, 117)
+script = ExtResource("2_0xm2m")
 
-[node name="Hand2" parent="." unique_id=1102264940 instance=ExtResource("2_0xm2m")]
-position = Vector2(84, 539)
-player = "computer"
+[node name="EnemyActions" type="Label" parent="." unique_id=1376513800]
+offset_left = 806.0
+offset_top = 81.0
+offset_right = 868.0
+offset_bottom = 104.0
+text = "Actions points:"
 
-[node name="HeatText" type="Label" parent="." unique_id=753321561]
-offset_left = 1000.0
-offset_top = 35.0
-offset_right = 1040.0
-offset_bottom = 58.0
-
-[node name="OilText" type="Label" parent="." unique_id=342088565]
-offset_left = 1000.0
-offset_top = 75.0
-offset_right = 1040.0
-offset_bottom = 100.0
-
-[node name="WorkText" type="Label" parent="." unique_id=1864009568]
-offset_left = 1000.0
-offset_top = 118.0
-offset_right = 1040.0
-offset_bottom = 143.0
+[node name="PlayerHealthText" type="Label" parent="." unique_id=836549632]
+offset_left = 64.77272
+offset_top = 40.367065
+offset_right = 104.77272
+offset_bottom = 63.367065
+text = "Player health:"
 
 [connection signal="pressed" from="GoButton" to="." method="_on_go_button_pressed"]
-[connection signal="card_selected" from="Hand" to="Hand" method="_on_card_selected"]
-[connection signal="card_selected" from="Hand2" to="Hand2" method="_on_card_selected"]

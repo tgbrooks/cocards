@@ -11,11 +11,6 @@ var selected_card: Card = null
 func _ready() -> void:
 	pass
 
-func make_deck(main:Main) -> void:
-	var library = CardLibrary.new()
-	for enemy_name in ["lever", "lever", "force", "force", "lubricate"]:
-		deck.append(library.make_card_by_name(enemy_name, main))
-
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:

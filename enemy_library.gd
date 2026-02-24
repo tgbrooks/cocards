@@ -1,4 +1,4 @@
-class_name ObjectiveLibrary extends Node
+class_name EnemyLibrary extends Node
 
 
 # Called when the node enters the scene tree for the first time.
@@ -6,21 +6,16 @@ func _ready() -> void:
 	pass # Replace with function body.
 
 
-func make_objective_by_name(objective_name: String, main: Main) -> Objective:
-	var objective = Objective.new()
-	objective.objective_name = objective_name
-	if objective_name == 'grind':
-		objective.heat_cost = 0
-		objective.oil_cost = 2
-		objective.work_cost = 1
-	elif objective_name == 'mash':
-		objective.heat_cost = 2
-		objective.oil_cost = 1
-		objective.work_cost = 1
-	elif objective_name == 'stir':
-		objective.heat_cost = 2
-		objective.work_cost = 2
+func make_enemy_by_name(enemy_name: String, main: Main) -> Enemy:
+	var enemy = Enemy.new()
+	enemy.enemy_name = enemy_name
+	if enemy_name == 'grunt':
+		enemy.health = 5
+		enemy.attack = 1
+	elif enemy_name == 'mage':
+		enemy.health = 3
+		enemy.attack = 3
 	else:
-		print("Unrecognized objective name", objective_name)
+		print("Unrecognized enemy name", enemy_name)
 		return null
-	return objective
+	return enemy
