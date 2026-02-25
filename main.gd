@@ -23,7 +23,7 @@ func _ready() -> void:
 		self.add_child(cs)
 		
 	var library = CardLibrary.new()
-	for card_name in ["one", "one", "one", "two", "two", "two", "three", "three", "three"]:
+	for card_name in ["one", "one", "one", "two", "two", "two", "three", "three", "three", "chain_strike"]:
 		var card = library.make_card_by_name(card_name, self)
 		deck.append(card)
 		self.add_child(card)
@@ -79,13 +79,13 @@ func on_enemy_pressed(enemy: Enemy) -> void:
 		# Play selected cards on the enemy, starting from the bottom
 		for i in range(selected_cards.size()-1,-1,-1):
 			var card = selected_cards[i]
-			play_card(card, enemy)
+			play_card(card, enemy, selected_cards)
 		gain_enemy_action_points(1)
 		selected_cards = []
 		selected_card_stack = null
 
-func play_card(card: Card, enemy: Enemy) -> void:
-	card.play(enemy)
+func play_card(card: Card, enemy: Enemy, card_stack: Array[Card]) -> void:
+	card.play(enemy, card_stack)
 	var idx = selected_cards.find(card)
 	if idx >= 0:
 		selected_cards.pop_at(idx)

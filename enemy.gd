@@ -24,13 +24,11 @@ func take_damage(damage: int) -> void:
 	if health <= 0:
 		health = 0
 		defeated.emit()
-		if get_parent():
-			get_parent().remove_child(self)
-		print("Starting tween", self)
+		#if get_parent():
+		#	get_parent().remove_child(self)
 		var tween = create_tween()
-		#tween.tween_property(self, "scale", Vector2(0,0), 1.25)
+		tween.tween_property(self, "scale", Vector2(0,0), 1.25)
 		tween.tween_callback(self.queue_free)
-		tween.tween_callback(print.bind("FREE ME"))
 	draw()
 
 func take_action(main: Main) -> void:

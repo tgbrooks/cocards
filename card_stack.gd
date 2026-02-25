@@ -23,7 +23,7 @@ func _process(delta: float) -> void:
 		else:
 			var factor = 0.0001**delta
 			card.position = to_pos * (1-factor) + card.position*factor
-		curr_height += card.size.y + padding
+		curr_height += 50 #card.button.size.y + padding
 
 func append(card: Card) -> void:
 	cards.append(card)
