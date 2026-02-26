@@ -5,6 +5,8 @@ class_name Card extends Node2D
 @export var suit: Enums.Suit = Enums.Suit.RED
 @export var face_up: bool = true
 @export var damage: int = 1
+@export var dodge: int = 0
+@export var shield: int = 0
 @export var description: String = ''
 signal card_flipped(to_front: bool)
 signal played(enemy: Enemy, card_stack: Array[Card])
@@ -18,6 +20,8 @@ var card_text: String
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	var damage_icons = '⚔️'.repeat(damage)
+	var shield_icons = '🛡️'.repeat(shield)
+	var dodge_icons = '🏃'.repeat(dodge)
 	number_label.text = "%s" % number
 	name_label.text = card_name
 	description_label.text = '%s\n%s' % [damage_icons, description]
@@ -40,8 +44,10 @@ func flip_card(to_front: bool) -> void:
 	else:
 		button.text = "--"
 
-func play(enemy: Enemy, card_stack: Array[Card]) -> void:
+func play(enemy: Enemy, card_stack: Array[Card], main: Main) -> void:
+	main.gain_shield(shield)
 	enemy.take_damage(damage)
+	enemy.gain_dodge(dodge)
 	get_parent().remove(self)
 	var tween = create_tween()
 	tween.tween_property(self, "scale", Vector2(0,0), 0.15).set_ease(Tween.EASE_IN)

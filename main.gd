@@ -6,10 +6,14 @@ class_name Main extends Node2D
 @export var played_cards: Array[CardStack] = []
 @export var objectives: Array[Objective] = []
 @export var active_player: String = "human"
+@export var player_shield: int = 0
 var card_stacks: Array[CardStack] = []
 var deck: Array[Card] = []
 signal player_damaged(old_health: int, new_health: int)
+signal player_shield_changed(old: int, new: int)
 @onready var enemy_area: EnemyArea = $EnemyArea
+@onready var player_health_label: Label = $PlayerHealthLabel
+@onready var player_shield_label: Label = $PlayerShieldLabel
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -38,6 +42,8 @@ func _ready() -> void:
 	enemy_area.spawn_enemies()
 	player_damaged.connect(_on_player_damaged)
 	player_damaged.emit(player_health, player_health)
+	player_shield_changed.connect(_on_player_shield_change)
+	player_shield_changed.emit(0,0)
 
 func _on_go_button_pressed() -> void:
 	pass
@@ -81,7 +87,7 @@ func on_enemy_pressed(enemy: Enemy) -> void:
 		selected_card_stack = null
 
 func play_card(card: Card, enemy: Enemy, card_stack: Array[Card]) -> void:
-	card.play(enemy, card_stack)
+	card.play(enemy, card_stack, self)
 	var idx = selected_cards.find(card)
 	if idx >= 0:
 		selected_cards.pop_at(idx)
@@ -91,8 +97,23 @@ func gain_enemy_action_points(points:int) -> void:
 
 func damage_player(damage: int) -> void:
 	var old = player_health
-	player_health -= damage
-	player_damaged.emit(old, player_health)
+	var blocked_damage = min(damage, player_shield)
+	var unblocked_damage = damage - blocked_damage
+	player_health -= unblocked_damage
+	if player_health != old:
+		player_damaged.emit(old, player_health)
+	if blocked_damage > 0:
+		var old_shield = player_shield
+		player_shield -= blocked_damage
+		player_shield_changed.emit(old_shield, player_shield)
+
+func gain_shield(shield: int) -> void:
+	var old = player_shield
+	player_shield += shield
+	player_shield_changed.emit(old, player_shield)
 
 func _on_player_damaged(old, new) -> void:
-	$PlayerHealthText.text = "Player health: %s" % new
+	player_health_label.text = "Player health: %s" % new
+
+func _on_player_shield_change(old, new) -> void:
+	player_shield_label.text = 'Player shield: %s🛡️' % new
