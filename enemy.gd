@@ -3,14 +3,21 @@ class_name Enemy extends Button
 @export var enemy_name: String = "myenemy"
 @export var attack: int = 0
 @export var health: int = 1
+@export var action_points_threshold: int = 3
+@export var action_points: int = 0
 signal defeated()
 signal survived()
 signal damaged(damage: int)
+signal action_points_changed(old: int, new:int)
+signal action_taken()
+@onready var action_points_label: Label = $ActionPointsLabel
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	draw()
 	defeated.connect(_on_defeated)
+	action_points_changed.connect(_draw_action_points)
+	_draw_action_points(0,0)
 
 func draw():
 	text = "%s\n%s/%s" % [enemy_name, attack, health]
@@ -41,3 +48,13 @@ func take_action(main: Main) -> void:
 	tween.tween_property(self, "rotation_degrees", 0, 0.15/2)
 	#tween.tween_property(self, "scale", Vector2(1, 1), 0.15)
 	await tween.finished
+	action_taken.emit()
+
+func _draw_action_points(old: int, new:int) -> void:
+	var ns = "🔳".repeat(new)
+	var empty
+	if (action_points_threshold - new > 0):
+		empty = "🔲".repeat(action_points_threshold - new)
+	else:
+		empty = ""
+	action_points_label.text = "%s%s" % [ns, empty]

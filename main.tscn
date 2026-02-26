@@ -17,13 +17,6 @@ text = "Go"
 position = Vector2(813, 117)
 script = ExtResource("2_0xm2m")
 
-[node name="EnemyActions" type="Label" parent="." unique_id=1376513800]
-offset_left = 806.0
-offset_top = 81.0
-offset_right = 868.0
-offset_bottom = 104.0
-text = "Actions points:"
-
 [node name="PlayerHealthText" type="Label" parent="." unique_id=836549632]
 offset_left = 64.77272
 offset_top = 40.367065

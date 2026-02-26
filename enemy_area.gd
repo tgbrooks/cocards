@@ -1,5 +1,6 @@
 class_name EnemyArea extends Node2D
 
+signal enemy_action_taken(enemy: Enemy)
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -26,7 +27,6 @@ func spawn_enemies() -> void:
 		add_child(enemy)
 		enemy.add_to_group("enemies")
 		enemy.pressed.connect(main.on_enemy_pressed.bind(enemy))
-		main.enemy_action_taken.connect(print.bind("Enemies acting..."))
 	_position_enemies()
 
 func _position_enemies() -> void:
@@ -36,3 +36,14 @@ func _position_enemies() -> void:
 		var enemy = enemies[i]
 		enemy.position = Vector2(0, top)
 		top += enemy.size.y + 10
+
+func gain_action_points(points: int) -> void:
+	for enemy in enemies:
+		var old = enemy.action_points
+		enemy.action_points += points
+		enemy.action_points_changed.emit(old, enemy.action_points)
+		if enemy.action_points >= enemy.action_points_threshold:
+			old = enemy.action_points
+			enemy.action_points = 0
+			await enemy.take_action(get_parent())
+			enemy.action_points_changed.emit(enemy.action_points, 0)

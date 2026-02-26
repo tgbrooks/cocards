@@ -6,12 +6,8 @@ class_name Main extends Node2D
 @export var played_cards: Array[CardStack] = []
 @export var objectives: Array[Objective] = []
 @export var active_player: String = "human"
-@export var enemy_action_points: int = 0
-@export var enemy_action_points_threshold: int = 3
 var card_stacks: Array[CardStack] = []
 var deck: Array[Card] = []
-signal enemy_action_points_changed(old_value: int, new_value: int)
-signal enemy_action_taken()
 signal player_damaged(old_health: int, new_health: int)
 @onready var enemy_area: EnemyArea = $EnemyArea
 
@@ -40,7 +36,6 @@ func _ready() -> void:
 		i = (i + 1) % card_stacks.size()
 
 	enemy_area.spawn_enemies()
-	enemy_action_points_changed.connect(_on_enemy_action_points_changed)
 	player_damaged.connect(_on_player_damaged)
 	player_damaged.emit(player_health, player_health)
 
@@ -92,19 +87,7 @@ func play_card(card: Card, enemy: Enemy, card_stack: Array[Card]) -> void:
 		selected_cards.pop_at(idx)
 
 func gain_enemy_action_points(points:int) -> void:
-	var old = enemy_action_points
-	enemy_action_points += points
-	enemy_action_points_changed.emit(old, enemy_action_points)
-	if enemy_action_points >= enemy_action_points_threshold:
-		old = enemy_action_points
-		enemy_action_points = 0
-		enemy_action_taken.emit()
-		for enemy in enemy_area.enemies:
-			await enemy.take_action(self)
-		enemy_action_points_changed.emit(enemy_action_points, 0)
-
-func _on_enemy_action_points_changed(old, new) -> void:
-	$EnemyActions.text = "Action points: %s" % new
+	enemy_area.gain_action_points(points)
 
 func damage_player(damage: int) -> void:
 	var old = player_health
