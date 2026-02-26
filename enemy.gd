@@ -15,6 +15,7 @@ func _ready() -> void:
 func draw():
 	text = "%s\n%s/%s" % [enemy_name, attack, health]
 
+
 func _on_defeated() -> void:
 	print("Defeated a ", enemy_name)
 
@@ -33,3 +34,10 @@ func take_damage(damage: int) -> void:
 
 func take_action(main: Main) -> void:
 	main.damage_player(attack)
+	# Animate the attack
+	var tween = create_tween()
+	tween.tween_property(self, "rotation_degrees", 30, 0.15)
+	tween.tween_property(self, "rotation_degrees", -30, 0.15)
+	tween.tween_property(self, "rotation_degrees", 0, 0.15/2)
+	#tween.tween_property(self, "scale", Vector2(1, 1), 0.15)
+	await tween.finished

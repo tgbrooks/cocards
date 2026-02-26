@@ -13,6 +13,7 @@ var deck: Array[Card] = []
 signal enemy_action_points_changed(old_value: int, new_value: int)
 signal enemy_action_taken()
 signal player_damaged(old_health: int, new_health: int)
+@onready var enemy_area: EnemyArea = $EnemyArea
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -38,7 +39,7 @@ func _ready() -> void:
 		card_stacks[i].append(card)
 		i = (i + 1) % card_stacks.size()
 
-	$EnemyArea.spawn_enemies()
+	enemy_area.spawn_enemies()
 	enemy_action_points_changed.connect(_on_enemy_action_points_changed)
 	player_damaged.connect(_on_player_damaged)
 	player_damaged.emit(player_health, player_health)
@@ -98,7 +99,9 @@ func gain_enemy_action_points(points:int) -> void:
 		old = enemy_action_points
 		enemy_action_points = 0
 		enemy_action_taken.emit()
-		enemy_action_points_changed.emit(old, enemy_action_points)
+		for enemy in enemy_area.enemies:
+			await enemy.take_action(self)
+		enemy_action_points_changed.emit(enemy_action_points, 0)
 
 func _on_enemy_action_points_changed(old, new) -> void:
 	$EnemyActions.text = "Action points: %s" % new

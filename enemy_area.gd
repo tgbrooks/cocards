@@ -10,6 +10,14 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	pass
 
+var enemies: Array[Enemy]:
+	get:
+		var enemies: Array[Enemy] = []
+		for child in get_children():
+			if is_instance_of(child, Enemy):
+				enemies.append(child)
+		return enemies
+
 func spawn_enemies() -> void:
 	var main = get_parent()
 	var enemy_library = EnemyLibrary.new()
@@ -18,7 +26,7 @@ func spawn_enemies() -> void:
 		add_child(enemy)
 		enemy.add_to_group("enemies")
 		enemy.pressed.connect(main.on_enemy_pressed.bind(enemy))
-		main.enemy_action_taken.connect(enemy.take_action.bind(main))
+		main.enemy_action_taken.connect(print.bind("Enemies acting..."))
 	_position_enemies()
 
 func _position_enemies() -> void:
