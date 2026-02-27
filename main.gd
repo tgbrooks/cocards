@@ -8,12 +8,12 @@ class_name Main extends Node2D
 @export var active_player: String = "human"
 @export var player_shield: int = 0
 var card_stacks: Array[CardStack] = []
-var deck: Array[Card] = []
 signal player_damaged(old_health: int, new_health: int)
 signal player_shield_changed(old: int, new: int)
 @onready var enemy_area: EnemyArea = $EnemyArea
 @onready var player_health_label: Label = $PlayerHealthLabel
 @onready var player_shield_label: Label = $PlayerShieldLabel
+@onready var deck: Deck = $Deck
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -27,17 +27,8 @@ func _ready() -> void:
 	for card_name in ["one", "one", "one", "two", "two", "two", "three", "three", "three", "chain_strike"]:
 		var card = library.make_card_by_name(card_name, self)
 		deck.append(card)
-		self.add_child(card)
 
-	deck.shuffle()
-
-	var i = 0
-	while true:
-		var card = deck.pop_back()
-		if not card:
-			break
-		card_stacks[i].append(card)
-		i = (i + 1) % card_stacks.size()
+	deal_cards()
 
 	enemy_area.spawn_enemies()
 	player_damaged.connect(_on_player_damaged)
@@ -52,6 +43,18 @@ func _process(_delta: float) -> void:
 	if Input.is_key_pressed(KEY_R):
 		# FOR DEBUG PURPOSES, RESTART GAME
 		get_tree().reload_current_scene()
+
+func deal_cards():
+	deck.shuffle()
+
+	var i = 0
+	while true:
+		var card = deck.pop()
+		if not card:
+			break
+		card.flip_card(Enums.CardFace.FRONT)
+		card_stacks[i].append(card)
+		i = (i + 1) % card_stacks.size()
 
 func cards_activated(cards: Array[Card], card_stack: CardStack) -> void:
 	if not Card.can_chain(cards):
@@ -81,16 +84,27 @@ func on_enemy_pressed(enemy: Enemy) -> void:
 		# Play selected cards on the enemy, starting from the bottom
 		for i in range(selected_cards.size()-1,-1,-1):
 			var card = selected_cards[i]
+			card.unselect()
 			play_card(card, enemy, selected_cards)
 		gain_enemy_action_points(1)
 		selected_cards = []
 		selected_card_stack = null
+		
+		var all_empty = true
+		for cs in card_stacks:
+			if cs.cards.size() > 0:
+				all_empty = false
+		if all_empty:
+			deal_cards()
 
 func play_card(card: Card, enemy: Enemy, card_stack: Array[Card]) -> void:
 	card.play(enemy, card_stack, self)
 	var idx = selected_cards.find(card)
 	if idx >= 0:
 		selected_cards.pop_at(idx)
+	deck.append(card)
+	await card.flip_card(Enums.CardFace.BACK)
+
 
 func gain_enemy_action_points(points:int) -> void:
 	enemy_area.gain_action_points(points)
@@ -112,8 +126,8 @@ func gain_shield(shield: int) -> void:
 	player_shield += shield
 	player_shield_changed.emit(old, player_shield)
 
-func _on_player_damaged(old, new) -> void:
+func _on_player_damaged(_old, new) -> void:
 	player_health_label.text = "Player health: %s" % new
 
-func _on_player_shield_change(old, new) -> void:
+func _on_player_shield_change(_old, new) -> void:
 	player_shield_label.text = 'Player shield: %s🛡️' % new

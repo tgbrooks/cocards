@@ -2,7 +2,6 @@ class_name CardStack extends Node2D
 
 var cards: Array[Card] = []
 var padding: float = 10.0
-var reference: Node = null
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -11,8 +10,6 @@ func _ready() -> void:
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
-	if reference:
-		position = reference.position + Vector2(0, reference.size.y + padding);
 	var curr_height = 0;
 	for i in range(cards.size()):
 		var card = cards[i]

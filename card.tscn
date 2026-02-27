@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://rpc1dufopah6" path="res://card.gd" id="1_kikvd"]
 [ext_resource type="Texture2D" uid="uid://clxrg3cycrmki" path="res://assets/card.svg" id="1_rjlel"]
+[ext_resource type="Texture2D" uid="uid://dqsmhkyo10pex" path="res://assets/card_back.svg" id="3_q5obu"]
 
 [node name="Card" type="Node2D" unique_id=627962567]
 script = ExtResource("1_kikvd")
@@ -33,3 +34,7 @@ offset_top = 43.0
 offset_right = 110.0
 offset_bottom = 149.0
 autowrap_mode = 3
+
+[node name="CardBackSprite" type="Sprite2D" parent="." unique_id=683705475]
+texture = ExtResource("3_q5obu")
+centered = false

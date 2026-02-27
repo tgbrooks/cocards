@@ -2,6 +2,8 @@
 
 [ext_resource type="Script" uid="uid://bg7dsimdwouw8" path="res://main.gd" id="1_h2yge"]
 [ext_resource type="Script" uid="uid://cwwbn2cbi1hh8" path="res://enemy_area.gd" id="2_0xm2m"]
+[ext_resource type="PackedScene" uid="uid://bcwgh0tfhin8h" path="res://deck.tscn" id="3_h2yge"]
+[ext_resource type="Script" uid="uid://bs0iy2kq8kexa" path="res://deck.gd" id="4_1bvp3"]
 
 [node name="Main" type="Node2D" unique_id=952264028]
 script = ExtResource("1_h2yge")
@@ -30,5 +32,9 @@ offset_top = 69.0
 offset_right = 105.0
 offset_bottom = 92.0
 text = "Player shield:"
+
+[node name="Deck" parent="." unique_id=1988589314 instance=ExtResource("3_h2yge")]
+position = Vector2(889, 457)
+script = ExtResource("4_1bvp3")
 
 [connection signal="pressed" from="GoButton" to="." method="_on_go_button_pressed"]

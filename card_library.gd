@@ -15,10 +15,12 @@ func make_card_by_name(card_name: String, main: Main) -> Card:
 	card.card_name = card_name
 	if card_name == 'one':
 		card.number = 1
+		card.damage = 0
 		card.suit = Enums.Suit.RED
 		card.dodge = 2
 	elif card_name == 'two':
 		card.number = 2
+		card.damage = 0
 		card.suit = Enums.Suit.RED
 		card.shield = 1
 	elif card_name == 'three':

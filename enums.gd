@@ -5,3 +5,8 @@ enum Suit {
 	BLUE,
 	GREEN,
 }
+
+enum CardFace {
+	FRONT,
+	BACK,
+}
