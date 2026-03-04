@@ -24,7 +24,7 @@ func _ready() -> void:
 		self.add_child(cs)
 		
 	var library = CardLibrary.new()
-	for card_name in ["one", "one", "two", "two",  "three", "three",  "chain_strike", "red twin", "blue twin", "green twin"]:
+	for card_name in ["one", "one", "two", "two",  "three", "three",  "chain_strike", "red twin", "blue twin", "green twin", "double_dmg"]:
 		var card = library.make_card_by_name(card_name, self)
 		deck.append(card)
 
@@ -83,14 +83,17 @@ func on_enemy_pressed(enemy: Enemy) -> void:
 	if selected_cards:
 		# Play selected cards on the enemy, starting from the bottom
 		var chain = selected_cards.duplicate(false)
+
+		var result = Card.compute_chain(selected_cards, enemy, self)
+		result.apply(chain, enemy, self)
 		for i in range(chain.size()-1,-1,-1):
 			var card = chain[i]
 			card.unselect()
-			play_card(card, enemy, chain)
+			play_card(card)
 		gain_enemy_action_points(1)
 		selected_cards = []
 		selected_card_stack = null
-		
+
 		var all_empty = true
 		for cs in card_stacks:
 			if cs.cards.size() > 0:
@@ -98,8 +101,8 @@ func on_enemy_pressed(enemy: Enemy) -> void:
 		if all_empty:
 			deal_cards()
 
-func play_card(card: Card, enemy: Enemy, card_stack: Array[Card]) -> void:
-	card.play(enemy, card_stack, self)
+func play_card(card: Card) -> void:
+	card.get_parent().remove(card)
 	var idx = selected_cards.find(card)
 	if idx >= 0:
 		selected_cards.pop_at(idx)

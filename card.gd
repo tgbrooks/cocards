@@ -4,13 +4,20 @@ class_name Card extends Node2D
 @export var number: int = 0 
 @export var suit: Enums.Suit = Enums.Suit.RED
 @export var visible_face: Enums.CardFace = Enums.CardFace.BACK
-@export var damage: int = 1
+@export var damage: int = 0
 @export var dodge: int = 0
 @export var shield: int = 0
 @export var description: String = ''
 @export var card_labels: Array[String] = []
+var first_pass = func(result: StackResults, _enemy: Enemy, _main: Main, _cards: Array[Card]) -> StackResults:
+	result.damage += damage
+	result.shield += shield
+	result.dodge += dodge
+	return result
+var second_pass = func(result: StackResults, _enemy: Enemy, _main: Main, _cards: Array[Card]) -> StackResults:
+	return result
 signal card_flipped(to_front: bool)
-signal played(enemy: Enemy, card_stack: Array[Card])
+#signal played(enemy: Enemy, card_stack: Array[Card])
 @onready var button: Button = $Button
 @onready var number_label: Label = $NumberLabel
 @onready var name_label: Label = $NameLabel
@@ -54,13 +61,6 @@ func flip_card(face: Enums.CardFace) -> void:
 	tween.tween_property(self, "scale", Vector2(1.0, 1.0), 0.25)
 	await tween.finished
 
-func play(enemy: Enemy, card_stack: Array[Card], main: Main) -> void:
-	main.gain_shield(shield)
-	enemy.take_damage(damage)
-	enemy.gain_dodge(dodge)
-	get_parent().remove(self)
-	played.emit(enemy, card_stack)
-	
 static func can_chain(cards: Array[Card]) -> bool:
 	var curr_number = null
 	for card in cards:
@@ -71,3 +71,15 @@ static func can_chain(cards: Array[Card]) -> bool:
 			return false
 		curr_number = card.number
 	return true
+
+static func compute_chain(cards: Array[Card], enemy: Enemy, main: Main) -> StackResults:
+	var result = StackResults.new()
+
+	for i in range(cards.size()-1,-1,-1):
+		var card = cards[i]
+		card.first_pass.call(result, enemy, main, cards)
+
+	for i in range(cards.size()-1,-1,-1):
+		var card = cards[i]
+		card.second_pass.call(result, enemy, main, cards)
+	return result
