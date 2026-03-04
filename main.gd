@@ -36,9 +36,6 @@ func _ready() -> void:
 	player_shield_changed.connect(_on_player_shield_change)
 	player_shield_changed.emit(0,0)
 
-func _on_go_button_pressed() -> void:
-	pass
-
 func _process(_delta: float) -> void:
 	if Input.is_key_pressed(KEY_R):
 		# FOR DEBUG PURPOSES, RESTART GAME

@@ -38,3 +38,9 @@ autowrap_mode = 3
 [node name="CardBackSprite" type="Sprite2D" parent="." unique_id=683705475]
 texture = ExtResource("3_q5obu")
 centered = false
+
+[node name="Preview" type="Node2D" parent="." unique_id=416785477]
+visible = false
+z_index = 10
+position = Vector2(50, 0)
+scale = Vector2(1.5, 1.5)

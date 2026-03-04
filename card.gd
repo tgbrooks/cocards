@@ -23,6 +23,7 @@ signal card_flipped(to_front: bool)
 @onready var name_label: Label = $NameLabel
 @onready var description_label: Label = $DescriptionLabel
 @onready var card_sprite: Sprite2D = $CardSprite
+@onready var preview: Node2D = $Preview
 @onready var card_back_sprite: Sprite2D = $CardBackSprite
 
 # Called when the node enters the scene tree for the first time.
@@ -33,8 +34,17 @@ func _ready() -> void:
 	number_label.text = "%s" % number
 	name_label.text = card_name
 	description_label.text = '%s%s%s\n%s' % [damage_icons, shield_icons, dodge_icons, description]
-	self.button.pressed.connect(_on_pressed)
+	button.pressed.connect(_on_pressed)
 	button.modulate = Color(1.0, 1.0, 1.0, 0.0)
+	
+	button.mouse_entered.connect(_on_hover)
+	button.mouse_exited.connect(_off_hover)
+
+	# Set-up the on-hover preview
+	preview.position = Vector2(card_sprite.texture.get_width() + 10, -10)
+	preview.add_child(card_sprite.duplicate(false))
+	preview.add_child(number_label.duplicate(false))
+	preview.add_child(description_label.duplicate(false))
 
 func _on_pressed() -> void:
 	var parent = get_parent()
@@ -83,3 +93,11 @@ static func compute_chain(cards: Array[Card], enemy: Enemy, main: Main) -> Stack
 		var card = cards[i]
 		card.second_pass.call(result, enemy, main, cards)
 	return result
+
+func _on_hover():
+	if visible_face == Enums.CardFace.FRONT:
+		# Pop up a bigger version
+		preview.visible = true
+
+func _off_hover():
+	preview.visible = false

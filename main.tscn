@@ -8,13 +8,6 @@
 [node name="Main" type="Node2D" unique_id=952264028]
 script = ExtResource("1_h2yge")
 
-[node name="GoButton" type="Button" parent="." unique_id=889740436]
-offset_left = 1033.0
-offset_top = 587.0
-offset_right = 1117.0
-offset_bottom = 618.0
-text = "Go"
-
 [node name="EnemyArea" type="Node2D" parent="." unique_id=301296856]
 position = Vector2(813, 117)
 script = ExtResource("2_0xm2m")
@@ -36,5 +29,3 @@ text = "Player shield:"
 [node name="Deck" parent="." unique_id=1988589314 instance=ExtResource("3_h2yge")]
 position = Vector2(889, 457)
 script = ExtResource("4_1bvp3")
-
-[connection signal="pressed" from="GoButton" to="." method="_on_go_button_pressed"]
