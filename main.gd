@@ -24,7 +24,7 @@ func _ready() -> void:
 		self.add_child(cs)
 		
 	var library = CardLibrary.new()
-	for card_name in ["one", "one", "one", "two", "two", "two", "three", "three", "three", "chain_strike"]:
+	for card_name in ["one", "one", "two", "two",  "three", "three",  "chain_strike", "red twin", "blue twin", "green twin"]:
 		var card = library.make_card_by_name(card_name, self)
 		deck.append(card)
 
@@ -82,10 +82,11 @@ func cards_activated(cards: Array[Card], card_stack: CardStack) -> void:
 func on_enemy_pressed(enemy: Enemy) -> void:
 	if selected_cards:
 		# Play selected cards on the enemy, starting from the bottom
-		for i in range(selected_cards.size()-1,-1,-1):
-			var card = selected_cards[i]
+		var chain = selected_cards.duplicate(false)
+		for i in range(chain.size()-1,-1,-1):
+			var card = chain[i]
 			card.unselect()
-			play_card(card, enemy, selected_cards)
+			play_card(card, enemy, chain)
 		gain_enemy_action_points(1)
 		selected_cards = []
 		selected_card_stack = null

@@ -8,6 +8,7 @@ class_name Card extends Node2D
 @export var dodge: int = 0
 @export var shield: int = 0
 @export var description: String = ''
+@export var card_labels: Array[String] = []
 signal card_flipped(to_front: bool)
 signal played(enemy: Enemy, card_stack: Array[Card])
 @onready var button: Button = $Button
