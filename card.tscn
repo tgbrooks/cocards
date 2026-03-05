@@ -7,33 +7,9 @@
 [node name="Card" type="Node2D" unique_id=627962567]
 script = ExtResource("1_kikvd")
 
-[node name="CardSprite" type="Sprite2D" parent="." unique_id=517156271]
-texture = ExtResource("1_rjlel")
-centered = false
-
 [node name="Button" type="Button" parent="." unique_id=831281132]
 offset_right = 120.0
 offset_bottom = 168.0
-
-[node name="NumberLabel" type="Label" parent="." unique_id=999722931]
-offset_left = 5.0
-offset_top = 1.0
-offset_right = 30.0
-offset_bottom = 24.0
-horizontal_alignment = 1
-
-[node name="NameLabel" type="Label" parent="." unique_id=1939406463]
-offset_left = 37.0
-offset_top = 1.0
-offset_right = 117.0
-offset_bottom = 24.0
-
-[node name="DescriptionLabel" type="Label" parent="." unique_id=1820946754]
-offset_left = 9.0
-offset_top = 43.0
-offset_right = 110.0
-offset_bottom = 149.0
-autowrap_mode = 3
 
 [node name="CardBackSprite" type="Sprite2D" parent="." unique_id=683705475]
 texture = ExtResource("3_q5obu")
@@ -44,3 +20,29 @@ visible = false
 z_index = 10
 position = Vector2(50, 0)
 scale = Vector2(1.5, 1.5)
+
+[node name="CardFace" type="Node2D" parent="." unique_id=1030442575]
+
+[node name="CardSprite" type="Sprite2D" parent="CardFace" unique_id=517156271]
+texture = ExtResource("1_rjlel")
+centered = false
+
+[node name="NumberLabel" type="Label" parent="CardFace" unique_id=999722931]
+offset_left = 5.0
+offset_top = 1.0
+offset_right = 30.0
+offset_bottom = 24.0
+horizontal_alignment = 1
+
+[node name="NameLabel" type="Label" parent="CardFace" unique_id=1939406463]
+offset_left = 37.0
+offset_top = 1.0
+offset_right = 117.0
+offset_bottom = 24.0
+
+[node name="DescriptionLabel" type="Label" parent="CardFace" unique_id=1820946754]
+offset_left = 9.0
+offset_top = 43.0
+offset_right = 110.0
+offset_bottom = 149.0
+autowrap_mode = 3

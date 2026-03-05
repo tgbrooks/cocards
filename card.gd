@@ -18,11 +18,12 @@ var second_pass = func(result: StackResults, _enemy: Enemy, _main: Main, _cards:
 	return result
 signal card_flipped(to_front: bool)
 #signal played(enemy: Enemy, card_stack: Array[Card])
+@onready var card_face: Node2D = $CardFace
 @onready var button: Button = $Button
-@onready var number_label: Label = $NumberLabel
-@onready var name_label: Label = $NameLabel
-@onready var description_label: Label = $DescriptionLabel
-@onready var card_sprite: Sprite2D = $CardSprite
+@onready var number_label: Label = $CardFace/NumberLabel
+@onready var name_label: Label = $CardFace/NameLabel
+@onready var description_label: Label = $CardFace/DescriptionLabel
+@onready var card_sprite: Sprite2D = $CardFace/CardSprite
 @onready var preview: Node2D = $Preview
 @onready var card_back_sprite: Sprite2D = $CardBackSprite
 
@@ -65,9 +66,9 @@ func flip_card(face: Enums.CardFace) -> void:
 	var tween = create_tween()
 	tween.tween_property(self, "scale", Vector2(0.0, 1.), 0.25)
 	if face == Enums.CardFace.BACK:
-		tween.tween_callback(func (): card_back_sprite.visible = true)
+		tween.tween_callback(func (): card_back_sprite.visible = true; card_face.visible=false)
 	else:
-		tween.tween_callback(func (): card_back_sprite.visible = false)
+		tween.tween_callback(func (): card_back_sprite.visible = false; card_face.visible =  true)
 	tween.tween_property(self, "scale", Vector2(1.0, 1.0), 0.25)
 	await tween.finished
 
