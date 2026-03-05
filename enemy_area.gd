@@ -27,6 +27,8 @@ func spawn_enemies() -> void:
 		add_child(enemy)
 		enemy.add_to_group("enemies")
 		enemy.pressed.connect(main.on_enemy_pressed.bind(enemy))
+		enemy.on_hover.connect(main.preview_stack_results.bind(enemy))
+		enemy.off_hover.connect(main.clear_stack_results_preview)
 	_position_enemies()
 
 func _position_enemies() -> void:

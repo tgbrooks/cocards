@@ -14,6 +14,7 @@ signal player_shield_changed(old: int, new: int)
 @onready var player_health_label: Label = $PlayerHealthLabel
 @onready var player_shield_label: Label = $PlayerShieldLabel
 @onready var deck: Deck = $Deck
+var stack_results_preview: StackResultPreview = null
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -90,6 +91,7 @@ func on_enemy_pressed(enemy: Enemy) -> void:
 		gain_enemy_action_points(1)
 		selected_cards = []
 		selected_card_stack = null
+		clear_stack_results_preview()
 
 		var all_empty = true
 		for cs in card_stacks:
@@ -132,3 +134,18 @@ func _on_player_damaged(_old, new) -> void:
 
 func _on_player_shield_change(_old, new) -> void:
 	player_shield_label.text = 'Player shield: %s🛡️' % new
+
+func preview_stack_results(enemy) -> void:
+	if selected_cards:
+		var res = Card.compute_chain(selected_cards, enemy, self)
+		var preview = res.preview()
+		preview.position = Vector2(100, 100)
+		add_child(preview)
+		if stack_results_preview:
+			stack_results_preview.queue_free()
+		stack_results_preview = preview
+
+func clear_stack_results_preview():
+	if stack_results_preview:
+		stack_results_preview.queue_free()
+		stack_results_preview = null

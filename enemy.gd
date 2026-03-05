@@ -14,6 +14,8 @@ signal action_taken()
 signal dodge_changed(old: int, new:int)
 @onready var action_points_label: Label = $ActionPointsLabel
 @onready var dodge_label: Label = $DodgeLabel
+signal on_hover()
+signal off_hover()
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -22,6 +24,8 @@ func _ready() -> void:
 	action_points_changed.connect(_draw_action_points)
 	_draw_action_points(0,0)
 	dodge_changed.connect(_draw_dodge)
+	mouse_entered.connect(on_hover.emit)
+	mouse_exited.connect(off_hover.emit)
 
 func draw():
 	text = "%s\n%s/%s" % [enemy_name, attack, health]
