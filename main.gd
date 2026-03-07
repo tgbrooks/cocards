@@ -25,7 +25,7 @@ func _ready() -> void:
 		self.add_child(cs)
 		
 	var library = CardLibrary.new()
-	for card_name in ["one", "one", "two", "two",  "three", "three",  "chain_strike", "red twin", "blue twin", "green twin", "double_dmg"]:
+	for card_name in ["red one", "green one", "blue two", "green two",  "red three", "blue three",  "chain", "red twin", "blue twin", "green twin", "double_dmg"]:
 		var card = library.make_card_by_name(card_name, self)
 		deck.append(card)
 

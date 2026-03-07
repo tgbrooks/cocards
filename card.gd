@@ -34,6 +34,7 @@ func _ready() -> void:
 	var dodge_icons = '🏃'.repeat(dodge)
 	number_label.text = "%s" % number
 	name_label.text = card_name
+	card_sprite.modulate = Util.suit_to_color(suit)
 	description_label.text = '%s%s%s\n%s' % [damage_icons, shield_icons, dodge_icons, description]
 	button.pressed.connect(_on_pressed)
 	button.modulate = Color(1.0, 1.0, 1.0, 0.0)

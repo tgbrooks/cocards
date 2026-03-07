@@ -20,21 +20,49 @@ func has_twins(cs: Array[Card]) -> bool:
 func make_card_by_name(card_name: String, main: Main) -> Card:
 	var card = card_scene.instantiate()
 	card.card_name = card_name
-	if card_name == 'one':
+	if card_name == 'green one':
 		card.number = 1
 		card.damage = 0
-		card.suit = Enums.Suit.RED
+		card.suit = Enums.Suit.GREEN
 		card.dodge = 2
-	elif card_name == 'two':
+	elif card_name == 'green two':
 		card.number = 2
 		card.damage = 0
-		card.suit = Enums.Suit.RED
+		card.suit = Enums.Suit.GREEN
+		card.dodge = 2
+	elif card_name == 'green three':
+		card.number = 3
+		card.damage = 0
+		card.suit = Enums.Suit.GREEN
+		card.dodge = 2
+	elif card_name == 'blue one':
+		card.number = 1
+		card.damage = 0
+		card.suit = Enums.Suit.BLUE
 		card.shield = 1
-	elif card_name == 'three':
+	elif card_name == 'blue two':
+		card.number = 2
+		card.damage = 0
+		card.suit = Enums.Suit.BLUE
+		card.shield = 1
+	elif card_name == 'blue three':
+		card.number = 3
+		card.damage = 0
+		card.suit = Enums.Suit.BLUE
+		card.shield = 1
+	elif card_name == 'red one':
+		card.number = 1
+		card.damage = 1
+		card.suit = Enums.Suit.RED
+	elif card_name == 'red two':
+		card.number = 2
+		card.damage = 1
+		card.suit = Enums.Suit.RED
+	elif card_name == 'red three':
 		card.number = 3
 		card.damage = 1
 		card.suit = Enums.Suit.RED
-	elif card_name == 'chain_strike':
+	elif card_name == 'chain':
 		card.number = 1
 		card.damage = 0
 		card.description = "one damage per card in chain"
