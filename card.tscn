@@ -24,6 +24,7 @@ scale = Vector2(1.5, 1.5)
 [node name="CardFace" type="Node2D" parent="." unique_id=1030442575]
 
 [node name="CardSprite" type="Sprite2D" parent="CardFace" unique_id=517156271]
+scale = Vector2(0.25, 0.25)
 texture = ExtResource("1_rjlel")
 centered = false
 
