@@ -42,7 +42,7 @@ func _ready() -> void:
 	button.mouse_exited.connect(_off_hover)
 
 	# Set-up the on-hover preview
-	preview.position = Vector2(card_sprite.texture.get_width() + 10, -10)
+#	preview.position = Vector2(card_sprite.texture.get_width() + 10, -10)
 	preview.add_child(card_sprite.duplicate(false))
 	preview.add_child(number_label.duplicate(false))
 	preview.add_child(description_label.duplicate(false))
