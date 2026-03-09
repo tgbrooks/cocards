@@ -2,10 +2,11 @@ class_name CardStack extends Node2D
 
 var cards: Array[Card] = []
 var padding: float = 10.0
+@onready var background_button: Button = $BackgroundButton
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	pass # Replace with function body.
+	background_button.pressed.connect(stack_pressed)
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -48,3 +49,14 @@ func card_pressed(card: Card) -> void:
 	if not Card.can_chain(these_cards):
 		return
 	get_parent().cards_activated(these_cards, self)
+
+func stack_pressed() -> void:
+	print("Pressed!")
+	if cards:
+		# There is a card here so we act like we click on the card
+		var bottom_card = cards[cards.size()-1]
+		card_pressed(bottom_card)
+	else:
+		# Empty cards activated onto here to move any selected cards to us
+		var empty: Array[Card] = []
+		get_parent().cards_activated(empty, self)

@@ -4,3 +4,7 @@
 
 [node name="Node2D" type="Node2D" unique_id=817149055]
 script = ExtResource("1_t5wva")
+
+[node name="BackgroundButton" type="Button" parent="." unique_id=1135075847]
+offset_right = 120.0
+offset_bottom = 327.648

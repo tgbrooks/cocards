@@ -15,11 +15,12 @@ signal player_shield_changed(old: int, new: int)
 @onready var player_shield_label: Label = $PlayerShieldLabel
 @onready var deck: Deck = $Deck
 var stack_results_preview: StackResultPreview = null
+var cs_scene = preload("res://card_stack.tscn")
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	for i in range(3):
-		var cs = CardStack.new()
+		var cs = cs_scene.instantiate()
 		card_stacks.append(cs)
 		cs.position = Vector2(200*i+100, 300)
 		self.add_child(cs)
@@ -59,9 +60,16 @@ func cards_activated(cards: Array[Card], card_stack: CardStack) -> void:
 		return
 	if selected_card_stack != card_stack and selected_cards.size() > 0:
 		# Try playing the cards from the old stack onto the newly clicked stack
-		var bottom_card = cards[cards.size()-1]
-		var top_card = selected_cards[0]
-		if top_card.number == bottom_card.number - 1:
+		var can_chain = false
+		if cards:
+			var bottom_card = cards[cards.size()-1]
+			var top_card = selected_cards[0]
+			if top_card.number == bottom_card.number - 1:
+				can_chain = true
+		else:
+			can_chain = true
+
+		if can_chain:
 			# move the cards onto the new stack
 			for card in selected_cards:
 				card.unselect()
