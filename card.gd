@@ -48,6 +48,13 @@ func _ready() -> void:
 	preview.add_child(number_label.duplicate(false))
 	preview.add_child(description_label.duplicate(false))
 
+func _process(_delta: float) -> void:
+	var wsize: Vector2 = get_window().size
+	var global_loc = global_position.y
+	var size = card_sprite.get_rect().size.y * card_sprite.scale.y * preview.scale.y
+	var preview_offset = -20
+	preview.position.y = min(preview_offset, wsize.y - size - global_loc)
+
 func _on_pressed() -> void:
 	var parent = get_parent()
 	if is_instance_of(parent, CardStack):
