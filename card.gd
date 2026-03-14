@@ -4,20 +4,10 @@ class_name Card extends Node2D
 @export var number: int = 0 
 @export var suit: Enums.Suit = Enums.Suit.RED
 @export var visible_face: Enums.CardFace = Enums.CardFace.BACK
-@export var damage: int = 0
-@export var dodge: int = 0
-@export var shield: int = 0
-@export var description: String = ''
-@export var card_labels: Array[String] = []
-var first_pass = func(result: StackResults, _enemy: Enemy, _main: Main, _cards: Array[Card]) -> StackResults:
-	result.damage += damage
-	result.shield += shield
-	result.dodge += dodge
-	return result
-var second_pass = func(result: StackResults, _enemy: Enemy, _main: Main, _cards: Array[Card]) -> StackResults:
-	return result
+
+@export var upgrades: Array = []
+
 signal card_flipped(to_front: bool)
-#signal played(enemy: Enemy, card_stack: Array[Card])
 @onready var card_face: Node2D = $CardFace
 @onready var button: Button = $Button
 @onready var number_label: Label = $CardFace/NumberLabel
@@ -29,13 +19,13 @@ signal card_flipped(to_front: bool)
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	var damage_icons = '⚔️'.repeat(damage)
-	var shield_icons = '🛡️'.repeat(shield)
-	var dodge_icons = '🏃'.repeat(dodge)
 	number_label.text = "%s" % number
 	name_label.text = card_name
 	card_sprite.modulate = Util.suit_to_color(suit)
-	description_label.text = '%s%s%s\n%s' % [damage_icons, shield_icons, dodge_icons, description]
+	var descriptions = []
+	for upgrade in upgrades:
+		descriptions.append(upgrade.description)
+	description_label.text = ' '.join(descriptions)
 	button.pressed.connect(_on_pressed)
 
 	button.mouse_entered.connect(_on_hover)
@@ -54,6 +44,14 @@ func _process(_delta: float) -> void:
 	var size = card_sprite.get_rect().size.y * card_sprite.scale.y * preview.scale.y
 	var preview_offset = -20
 	preview.position.y = min(preview_offset, wsize.y - size - global_loc)
+
+var card_labels:
+	get():
+		var labels = []
+		for upgrade in upgrades:
+			for label in upgrade.labels:
+				labels.append(label)
+		return labels
 
 func _on_pressed() -> void:
 	var parent = get_parent()
@@ -96,11 +94,13 @@ static func compute_chain(cards: Array[Card], enemy: Enemy, main: Main) -> Stack
 
 	for i in range(cards.size()-1,-1,-1):
 		var card = cards[i]
-		card.first_pass.call(result, enemy, main, cards)
+		for upgrade in card.upgrades:
+			upgrade.first_pass.call(result, enemy, main, cards)
 
 	for i in range(cards.size()-1,-1,-1):
 		var card = cards[i]
-		card.second_pass.call(result, enemy, main, cards)
+		for upgrade in card.upgrades:
+			upgrade.second_pass.call(result, enemy, main, cards)
 	return result
 
 func _on_hover():
