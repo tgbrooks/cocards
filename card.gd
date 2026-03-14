@@ -37,8 +37,7 @@ func _ready() -> void:
 	card_sprite.modulate = Util.suit_to_color(suit)
 	description_label.text = '%s%s%s\n%s' % [damage_icons, shield_icons, dodge_icons, description]
 	button.pressed.connect(_on_pressed)
-	button.modulate = Color(1.0, 1.0, 1.0, 0.0)
-	
+
 	button.mouse_entered.connect(_on_hover)
 	button.mouse_exited.connect(_off_hover)
 
@@ -49,6 +48,7 @@ func _ready() -> void:
 	preview.add_child(description_label.duplicate(false))
 
 func _process(_delta: float) -> void:
+	# Keep the card preview visible on screen
 	var wsize: Vector2 = get_window().size
 	var global_loc = global_position.y
 	var size = card_sprite.get_rect().size.y * card_sprite.scale.y * preview.scale.y
