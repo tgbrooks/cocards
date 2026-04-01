@@ -7,8 +7,8 @@ static func has_twins(cs: Array[Card]) -> bool:
 			twins += 1
 	return twins == 2
 
-static func make_card_upgrade(name: String) -> CardUpgrade:
-	var upgrade: CardUpgrade = CardUpgrade.new()
+static func make_card_upgrade(name: String) -> CardUpgradeData:
+	var upgrade: CardUpgradeData = CardUpgradeData.new()
 	if name == "damage":
 		upgrade.description = "⚔️"
 		upgrade.damage = 1

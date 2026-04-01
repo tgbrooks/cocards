@@ -1,4 +1,4 @@
-class_name CardUpgrade extends Node
+class_name CardUpgradeData extends Resource
 
 @export var upgrade_name: String = "upgrade"
 @export var damage: int = 0

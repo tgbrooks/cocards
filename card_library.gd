@@ -3,6 +3,11 @@ var card_scene = preload("res://card.tscn")
 
 func make_card_by_name(card_name: String, main: Main) -> Card:
 	var card = card_scene.instantiate()
+	card.data = make_card_data_by_name(card_name, main)
+	return card
+
+func make_card_data_by_name(card_name: String, main: Main) -> CardData:
+	var card = CardData.new()
 	card.card_name = card_name
 	if card_name == 'green one':
 		card.number = 1
