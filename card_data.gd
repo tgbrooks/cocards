@@ -24,7 +24,6 @@ func flip_card(face: Enums.CardFace) -> void:
 	card_flipped.emit(face)
 
 static func can_chain(cards: Array[CardData]) -> bool:
-	print("Checking card chain", cards)
 	var curr_number = null
 	for card in cards:
 		if curr_number == null:

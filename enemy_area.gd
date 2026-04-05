@@ -9,6 +9,9 @@ var state: GameState:
 		_on_state_set()
 @onready var main = get_parent()
 
+func _process(_delta):
+	_position_enemies()
+
 func _on_state_set():
 	state.enemy_made.connect(_make_enemy)
 
@@ -31,7 +34,7 @@ func _position_enemies() -> void:
 	for i in enemies.size():
 		var enemy = enemies[i]
 		enemy.position = Vector2(0, top)
-		top += enemy.size.y + 10
+		top += enemy.button.size.y + 10
 
 func lookup_enemy(data: EnemyData) -> Enemy:
 	return data_to_enemy[data]
