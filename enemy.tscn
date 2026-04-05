@@ -2,26 +2,21 @@
 
 [ext_resource type="Script" uid="uid://b45f0cqvoe72v" path="res://enemy.gd" id="1_7k104"]
 
-[node name="Enemy" type="Button" unique_id=741388682]
-offset_right = 55.0
-offset_bottom = 55.0
+[node name="Enemy" type="Node2D" unique_id=358647836]
 script = ExtResource("1_7k104")
-enemy_name = null
-attack = null
-health = null
-action_points_threshold = null
-action_points = null
 
 [node name="ActionPointsLabel" type="Label" parent="." unique_id=581787762]
-layout_mode = 0
 offset_left = 64.0
 offset_top = 3.0
 offset_right = 104.0
 offset_bottom = 26.0
 
 [node name="DodgeLabel" type="Label" parent="." unique_id=1833790826]
-layout_mode = 0
 offset_left = 62.0
 offset_top = 27.0
 offset_right = 102.0
 offset_bottom = 50.0
+
+[node name="Button" type="Button" parent="." unique_id=72015210]
+offset_right = 8.0
+offset_bottom = 8.0

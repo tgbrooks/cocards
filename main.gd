@@ -26,6 +26,7 @@ func _init() -> void:
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	deck.data = state.deck
+	enemy_area.state = state
 	for i in range(3):
 		var cs = cs_scene.instantiate()
 		card_stacks.append(cs)
@@ -45,18 +46,6 @@ func _process(_delta: float) -> void:
 	if Input.is_key_pressed(KEY_R):
 		# FOR DEBUG PURPOSES, RESTART GAME
 		get_tree().reload_current_scene()
-
-func deal_cards():
-	deck.shuffle()
-
-	var i = 0
-	while true:
-		var card = deck.pop()
-		if not card:
-			break
-		card.flip_card(Enums.CardFace.FRONT)
-		card_stacks[i].append(card)
-		i = (i + 1) % card_stacks.size()
 
 func cards_activated(cards: Array[Card], card_stack: CardStack) -> void:
 	if not Card.can_chain(cards):

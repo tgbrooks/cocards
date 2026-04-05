@@ -9,7 +9,7 @@ class_name GameState extends Resource
 
 signal player_damaged(old_health: int, new_health: int)
 signal player_shield_changed(old: int, new: int)
-signal new_enemy(enemy: EnemyData)
+signal enemy_made(enemy: EnemyData)
 signal card_played(card: CardData)
 signal card_stacked(card: CardData, stack_idx: int)
 signal card_made(card: CardData)
@@ -104,7 +104,7 @@ func spawn_enemies() -> void:
 	for _name in ["grunt", "grunt", "mage"]:
 		var enemy = enemy_library.make_enemy_by_name(_name, self)
 		enemies.append(enemy)
-		new_enemy.emit(enemy)
+		enemy_made.emit(enemy)
 
 		# TODO move this logic to somewhere new (EnemyArea?)
 		#enemy.add_to_group("enemies")

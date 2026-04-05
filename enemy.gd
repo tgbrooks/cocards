@@ -1,14 +1,12 @@
-class_name Enemy extends Button
+class_name Enemy extends Node2D
 
 @export var data: EnemyData
 
 @onready var action_points_label: Label = $ActionPointsLabel
 @onready var dodge_label: Label = $DodgeLabel
+@onready var button: Button = $Button
 signal on_hover()
 signal off_hover()
-
-func _init(enemy_data: EnemyData):
-	data = enemy_data
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -17,13 +15,13 @@ func _ready() -> void:
 	data.action_points_changed.connect(_draw_action_points)
 	_draw_action_points(0,0)
 	data.dodge_changed.connect(_draw_dodge)
-	mouse_entered.connect(on_hover.emit)
-	mouse_exited.connect(off_hover.emit)
+	button.mouse_entered.connect(on_hover.emit)
+	button.mouse_exited.connect(off_hover.emit)
 	data.damaged.connect(draw)
 	data.action_taken.connect(_on_action_taken)
 
 func draw():
-	text = "%s\n%s/%s" % [data.enemy_name, data.attack, data.health]
+	button.text = "%s\n%s/%s" % [data.enemy_name, data.attack, data.health]
 
 
 func _on_defeated() -> void:

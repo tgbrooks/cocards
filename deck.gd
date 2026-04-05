@@ -11,7 +11,6 @@ func _on_data_set():
 	data.card_removed.connect(_on_pop)
 
 func _on_appended(card_data: CardData) -> void:
-	print("Card added!", card_data)
 	var card = main.lookup_card(card_data)
 	var old_position = to_local(card.global_position)
 	if card.get_parent():
