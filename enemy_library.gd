@@ -1,15 +1,13 @@
 class_name EnemyLibrary extends Node
 
-var enemy_scene = preload("res://enemy.tscn")
-
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	pass # Replace with function body.
 
 
-func make_enemy_by_name(enemy_name: String, main: Main) -> Enemy:
-	var enemy = enemy_scene.instantiate()
+func make_enemy_by_name(enemy_name: String, state: GameState) -> EnemyData:
+	var enemy = EnemyData.new()
 	enemy.enemy_name = enemy_name
 	if enemy_name == 'grunt':
 		enemy.health = 5

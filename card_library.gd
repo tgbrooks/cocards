@@ -1,12 +1,12 @@
 class_name CardLibrary extends Node
 var card_scene = preload("res://card.tscn")
 
-func make_card_by_name(card_name: String, main: Main) -> Card:
+func make_card_by_name(card_name: String, state: GameState) -> Card:
 	var card = card_scene.instantiate()
-	card.data = make_card_data_by_name(card_name, main)
+	card.data = make_card_data_by_name(card_name, state)
 	return card
 
-func make_card_data_by_name(card_name: String, main: Main) -> CardData:
+func make_card_data_by_name(card_name: String, state: GameState) -> CardData:
 	var card = CardData.new()
 	card.card_name = card_name
 	if card_name == 'green one':

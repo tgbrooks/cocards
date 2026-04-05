@@ -1,14 +1,18 @@
 class_name Deck extends Node2D
 
-@export var data: DeckData
-var game_view: GameView
+var data: DeckData:
+	set(value):
+		data = value
+		_on_data_set()
+@onready var main = get_parent()
 
-func _read():
+func _on_data_set():
 	data.card_appended.connect(_on_appended)
 	data.card_removed.connect(_on_pop)
 
 func _on_appended(card_data: CardData) -> void:
-	var card = game_view.lookup_card(card_data)
+	print("Card added!", card_data)
+	var card = main.lookup_card(card_data)
 	var old_position = to_local(card.global_position)
 	if card.get_parent():
 		card.get_parent().remove_child(card)
@@ -16,7 +20,7 @@ func _on_appended(card_data: CardData) -> void:
 	card.position = old_position
 
 func _on_pop(card_data: CardData):
-	var card = game_view.lookup_card(card_data)
+	var card = main.lookup_card(card_data)
 	var old_pos = card.global_position
 	remove_child(card)
 	card.global_position = old_pos

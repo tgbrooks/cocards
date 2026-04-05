@@ -4,7 +4,7 @@ var cards: Array[CardData] = []
 
 signal card_appended(card: CardData)
 signal card_removed(card: CardData)
-signal shullfed()
+signal shuffled()
 
 func append(card: CardData) -> void:
 	cards.append(card)

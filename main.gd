@@ -1,10 +1,10 @@
 class_name Main extends Node2D
 
+@export var state: GameState
 @export var player_health: int = 20
 @export var selected_cards: Array[Card] = []
 @export var selected_card_stack: CardStack = null
 @export var played_cards: Array[CardStack] = []
-@export var objectives: Array[Objective] = []
 @export var active_player: String = "human"
 @export var player_shield: int = 0
 var card_stacks: Array[CardStack] = []
@@ -16,27 +16,30 @@ signal player_shield_changed(old: int, new: int)
 @onready var deck: Deck = $Deck
 var stack_results_preview: StackResultPreview = null
 var cs_scene = preload("res://card_stack.tscn")
+var card_scene = preload("res://card.tscn")
+
+var data_to_card: Dictionary[CardData, Card] = {}
+
+func _init() -> void:
+	state = GameState.new()
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	deck.data = state.deck
 	for i in range(3):
 		var cs = cs_scene.instantiate()
 		card_stacks.append(cs)
 		cs.position = Vector2(200*i+100, 300)
 		self.add_child(cs)
-		
-	var library = CardLibrary.new()
-	for card_name in ["red one", "green one", "blue two", "green two",  "red three", "blue three",  "chain", "red twin", "blue twin", "green twin", "double_dmg"]:
-		var card = library.make_card_by_name(card_name, self)
-		deck.append(card)
 
-	deal_cards()
-
-	enemy_area.spawn_enemies()
 	player_damaged.connect(_on_player_damaged)
 	player_damaged.emit(player_health, player_health)
 	player_shield_changed.connect(_on_player_shield_change)
 	player_shield_changed.emit(0,0)
+	state.card_made.connect(_make_card)
+	state.card_stacked.connect(_stack_card)
+	
+	state.init()
 
 func _process(_delta: float) -> void:
 	if Input.is_key_pressed(KEY_R):
@@ -60,15 +63,9 @@ func cards_activated(cards: Array[Card], card_stack: CardStack) -> void:
 		return
 	if selected_card_stack != card_stack and selected_cards.size() > 0:
 		# Try playing the cards from the old stack onto the newly clicked stack
-		var can_chain = false
-		if cards:
-			var bottom_card = cards[cards.size()-1]
-			var top_card = selected_cards[0]
-			if top_card.number == bottom_card.number - 1:
-				can_chain = true
-		else:
-			can_chain = true
-
+		var new_chain = cards.duplicate()
+		new_chain.append_array(selected_cards)
+		var can_chain = Card.can_chain(new_chain)
 		if can_chain:
 			# move the cards onto the new stack
 			for card in selected_cards:
@@ -88,25 +85,13 @@ func cards_activated(cards: Array[Card], card_stack: CardStack) -> void:
 func on_enemy_pressed(enemy: Enemy) -> void:
 	if selected_cards:
 		# Play selected cards on the enemy, starting from the bottom
-		var chain = selected_cards.duplicate(false)
-
-		var result = Card.compute_chain(selected_cards, enemy, self)
-		result.apply(chain, enemy, self)
-		for i in range(chain.size()-1,-1,-1):
-			var card = chain[i]
-			card.unselect()
-			play_card(card)
-		gain_enemy_action_points(1)
+		var stack = []
+		for card in selected_cards:
+			stack.append(card.data)
+		state.play_stack(stack, enemy.data)
 		selected_cards = []
 		selected_card_stack = null
 		clear_stack_results_preview()
-
-		var all_empty = true
-		for cs in card_stacks:
-			if cs.cards.size() > 0:
-				all_empty = false
-		if all_empty:
-			deal_cards()
 
 func play_card(card: Card) -> void:
 	card.get_parent().remove(card)
@@ -116,27 +101,6 @@ func play_card(card: Card) -> void:
 	deck.append(card)
 	await card.flip_card(Enums.CardFace.BACK)
 
-
-func gain_enemy_action_points(points:int) -> void:
-	enemy_area.gain_action_points(points)
-
-func damage_player(damage: int) -> void:
-	var old = player_health
-	var blocked_damage = min(damage, player_shield)
-	var unblocked_damage = damage - blocked_damage
-	player_health -= unblocked_damage
-	if player_health != old:
-		player_damaged.emit(old, player_health)
-	if blocked_damage > 0:
-		var old_shield = player_shield
-		player_shield -= blocked_damage
-		player_shield_changed.emit(old_shield, player_shield)
-
-func gain_shield(shield: int) -> void:
-	var old = player_shield
-	player_shield += shield
-	player_shield_changed.emit(old, player_shield)
-
 func _on_player_damaged(_old, new) -> void:
 	player_health_label.text = "Player health: %s" % new
 
@@ -145,7 +109,7 @@ func _on_player_shield_change(_old, new) -> void:
 
 func preview_stack_results(enemy) -> void:
 	if selected_cards:
-		var res = Card.compute_chain(selected_cards, enemy, self)
+		var res = Card.compute_chain(selected_cards, enemy, self.state)
 		var preview = res.preview()
 		preview.position = Vector2(100, 100)
 		add_child(preview)
@@ -157,3 +121,16 @@ func clear_stack_results_preview():
 	if stack_results_preview:
 		stack_results_preview.queue_free()
 		stack_results_preview = null
+
+func _make_card(data: CardData):
+	var card = card_scene.instantiate()
+	card.data = data
+	data_to_card[data] = card
+
+func _stack_card(data: CardData, idx: int):
+	var card = data_to_card[data]
+	var cs = card_stacks[idx]
+	cs.append(card)
+
+func lookup_card(data: CardData) -> Card:
+	return data_to_card[data]

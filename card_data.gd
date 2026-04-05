@@ -24,6 +24,7 @@ func flip_card(face: Enums.CardFace) -> void:
 	card_flipped.emit(face)
 
 static func can_chain(cards: Array[CardData]) -> bool:
+	print("Checking card chain", cards)
 	var curr_number = null
 	for card in cards:
 		if curr_number == null:
@@ -34,16 +35,16 @@ static func can_chain(cards: Array[CardData]) -> bool:
 		curr_number = card.number
 	return true
 
-static func compute_chain(cards: Array[CardData], enemy: Enemy, main: Main) -> StackResults:
+static func compute_chain(cards: Array[CardData], enemy: EnemyData, state: GameState) -> StackResults:
 	var result = StackResults.new()
 
 	for i in range(cards.size()-1,-1,-1):
 		var card = cards[i]
 		for upgrade in card.upgrades:
-			upgrade.first_pass.call(result, enemy, main, cards)
+			upgrade.first_pass.call(result, enemy, state, cards)
 
 	for i in range(cards.size()-1,-1,-1):
 		var card = cards[i]
 		for upgrade in card.upgrades:
-			upgrade.second_pass.call(result, enemy, main, cards)
+			upgrade.second_pass.call(result, enemy, state, cards)
 	return result
