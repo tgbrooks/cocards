@@ -7,11 +7,11 @@ class_name CardUpgradeData extends Resource
 @export var description: String = "MISSING"
 @export var labels: Array[String] = []
 
-var first_pass = func(result: StackResults, _enemy: Enemy, _main: Main, _cards: Array[Card]) -> StackResults:
+var first_pass = func(result: StackResults, _enemy: EnemyData, _state: GameState, _cards: Array[CardData]) -> StackResults:
 	result.damage += damage
 	result.shield += shield
 	result.dodge += dodge
 	return result
 
-var second_pass = func(result: StackResults, _enemy: Enemy, _main: Main, _cards: Array[Card]) -> StackResults:
+var second_pass = func(result: StackResults, _enemy: EnemyData, _state: GameState, _cards: Array[CardData]) -> StackResults:
 	return result

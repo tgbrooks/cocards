@@ -3,6 +3,8 @@ class_name EnemyArea extends Node2D
 var enemy_scene = preload("res://enemy.tscn")
 var data_to_enemy: Dictionary[EnemyData, Enemy] = {}
 
+signal on_enemy_pressed(enemy: Enemy)
+
 var state: GameState:
 	set(value):
 		state = value
@@ -20,6 +22,7 @@ func _make_enemy(data: EnemyData):
 	enemy.data = data
 	data_to_enemy[data] = enemy
 	add_child(enemy)
+	enemy.button.pressed.connect(on_enemy_pressed.emit.bind(enemy))
 
 var enemies: Array[Enemy]:
 	get:

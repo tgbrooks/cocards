@@ -1,6 +1,6 @@
 class_name CardUpgradeLibrary extends Node
 
-static func has_twins(cs: Array[Card]) -> bool:
+static func has_twins(cs: Array[CardData]) -> bool:
 	var twins = 0
 	for card in cs:
 		if card.card_labels.find('twin') >= 0:

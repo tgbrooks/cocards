@@ -39,6 +39,7 @@ func _ready() -> void:
 	player_shield_changed.emit(0,0)
 	state.card_made.connect(_make_card)
 	state.card_stacked.connect(_stack_card)
+	enemy_area.on_enemy_pressed.connect(_on_enemy_pressed)
 	
 	state.init()
 
@@ -71,10 +72,10 @@ func cards_activated(cards: Array[Card], card_stack: CardStack) -> void:
 		card.select()
 	selected_card_stack = card_stack
 
-func on_enemy_pressed(enemy: Enemy) -> void:
+func _on_enemy_pressed(enemy: Enemy) -> void:
 	if selected_cards:
 		# Play selected cards on the enemy, starting from the bottom
-		var stack = []
+		var stack: Array[CardData] = []
 		for card in selected_cards:
 			stack.append(card.data)
 		state.play_stack(stack, enemy.data)
