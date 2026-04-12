@@ -1,15 +1,9 @@
 class_name Main extends Node2D
 
 @export var state: GameState
-@export var player_health: int = 20
 @export var selected_cards: Array[Card] = []
 @export var selected_card_stack: CardStack = null
-@export var played_cards: Array[CardStack] = []
-@export var active_player: String = "human"
-@export var player_shield: int = 0
 var card_stacks: Array[CardStack] = []
-signal player_damaged(old_health: int, new_health: int)
-signal player_shield_changed(old: int, new: int)
 @onready var enemy_area: EnemyArea = $EnemyArea
 @onready var player_health_label: Label = $PlayerHealthLabel
 @onready var player_shield_label: Label = $PlayerShieldLabel
@@ -33,10 +27,10 @@ func _ready() -> void:
 		cs.position = Vector2(200*i+100, 300)
 		self.add_child(cs)
 
-	player_damaged.connect(_on_player_damaged)
-	player_damaged.emit(player_health, player_health)
-	player_shield_changed.connect(_on_player_shield_change)
-	player_shield_changed.emit(0,0)
+	state.player_damaged.connect(_on_player_damaged)
+	_on_player_damaged(state.player_health, state.player_health)
+	state.player_shield_changed.connect(_on_player_shield_change)
+	_on_player_shield_change(state.player_shield, state.player_shield)
 	state.card_made.connect(_make_card)
 	state.card_stacked.connect(_stack_card)
 	state.card_played.connect(_on_card_played)
