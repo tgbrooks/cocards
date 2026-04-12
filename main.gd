@@ -39,6 +39,7 @@ func _ready() -> void:
 	player_shield_changed.emit(0,0)
 	state.card_made.connect(_make_card)
 	state.card_stacked.connect(_stack_card)
+	state.card_played.connect(_on_card_played)
 	enemy_area.on_enemy_pressed.connect(_on_enemy_pressed)
 	
 	state.init()
@@ -83,8 +84,7 @@ func _on_enemy_pressed(enemy: Enemy) -> void:
 		selected_card_stack = null
 		clear_stack_results_preview()
 
-func play_card(card: Card) -> void:
-	card.get_parent().remove(card)
+func _on_card_played(card: Card) -> void:
 	var idx = selected_cards.find(card)
 	if idx >= 0:
 		selected_cards.pop_at(idx)

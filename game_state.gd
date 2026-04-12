@@ -61,11 +61,13 @@ func play_stack(chain: Array[CardData], enemy: EnemyData) -> void:
 		deal_cards()
 
 func play_card(card: CardData) -> void:
-	for stack in card_stacks:
+	for i in range(card_stacks.size()):
+		var stack = card_stacks[i]
 		var idx = stack.find(card)
 		if idx >= 0:
 			stack.pop_at(idx)
 			card_played.emit(card)
+			card.flip_card(Enums.CardFace.BACK)
 			deck.append(card)
 			return
 	assert(false, "Card not found in deck")

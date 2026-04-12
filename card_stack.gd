@@ -1,6 +1,13 @@
 class_name CardStack extends Node2D
 
-var cards: Array[Card] = []
+var cards: Array[Card]:
+	get():
+		var my_cards: Array[Card] = []
+		for node in get_children():
+			if node is Card:
+				my_cards.append(node)
+		return my_cards
+
 var padding: float = 10.0
 @onready var background_button: Button = $BackgroundButton
 
@@ -24,21 +31,15 @@ func _process(delta: float) -> void:
 		curr_height += 50 #card.button.size.y + padding
 
 func append(card: Card) -> void:
-	cards.append(card)
 	var old_pos = to_local(card.global_position)
 	var parent = card.get_parent()
 	if parent:
 		parent.remove_child(card)
-	if parent is CardStack:
-		parent.cards.remove_at(parent.cards.find(card))
 	card.position = old_pos
 	add_child(card)
 
-func remove(card: Card) -> Card:
-	var idx = cards.find(card)
-	if idx >= 0:
-		return cards.pop_at(idx)
-	return null
+func remove(card: Card):
+	remove_child(card)
 
 func card_pressed(card: Card) -> void:
 	var idx = cards.find(card)
@@ -51,7 +52,6 @@ func card_pressed(card: Card) -> void:
 	get_parent().cards_activated(these_cards, self)
 
 func stack_pressed() -> void:
-	print("Pressed!")
 	if cards:
 		# There is a card here so we act like we click on the card
 		var bottom_card = cards[cards.size()-1]
