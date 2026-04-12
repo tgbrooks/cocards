@@ -78,7 +78,7 @@ static func can_chain(cards: Array[Card]) -> bool:
 	return CardData.can_chain(card_datas)
 
 static func compute_chain(cards: Array[Card], enemy: Enemy, state: GameState) -> StackResults:
-	var card_datas = []
+	var card_datas: Array[CardData] = []
 	for card in cards:
 		card_datas.append(card.data)
 	return CardData.compute_chain(card_datas, enemy.data, state)

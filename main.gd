@@ -35,6 +35,7 @@ func _ready() -> void:
 	state.card_stacked.connect(_stack_card)
 	state.card_played.connect(_on_card_played)
 	enemy_area.on_enemy_pressed.connect(_on_enemy_pressed)
+	enemy_area.on_enemy_hovered.connect(preview_stack_results)
 	
 	state.init()
 

@@ -4,12 +4,14 @@ var enemy_scene = preload("res://enemy.tscn")
 var data_to_enemy: Dictionary[EnemyData, Enemy] = {}
 
 signal on_enemy_pressed(enemy: Enemy)
+signal on_enemy_hovered(enemy: Enemy)
 
 var state: GameState:
 	set(value):
 		state = value
 		_on_state_set()
 @onready var main = get_parent()
+
 
 func _process(_delta):
 	_position_enemies()
@@ -23,6 +25,7 @@ func _make_enemy(data: EnemyData):
 	data_to_enemy[data] = enemy
 	add_child(enemy)
 	enemy.button.pressed.connect(on_enemy_pressed.emit.bind(enemy))
+	enemy.button.mouse_entered.connect(on_enemy_hovered.emit.bind(enemy))
 
 var enemies: Array[Enemy]:
 	get:
