@@ -17,9 +17,6 @@ signal dodge_changed(old: int, new:int)
 func _ready() -> void:
 	pass
 
-func _on_defeated() -> void:
-	print("Defeated a ", enemy_name)
-
 func take_damage(damage: int) -> void:
 	health -= damage
 	damaged.emit(damage)

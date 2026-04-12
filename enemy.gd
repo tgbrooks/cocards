@@ -17,12 +17,14 @@ func _ready() -> void:
 	data.dodge_changed.connect(_draw_dodge)
 	button.mouse_entered.connect(on_hover.emit)
 	button.mouse_exited.connect(off_hover.emit)
-	data.damaged.connect(draw)
+	data.damaged.connect(_on_damaged)
 	data.action_taken.connect(_on_action_taken)
+
+func _on_damaged(damage: int):
+	draw()
 
 func draw():
 	button.text = "%s\n%s/%s" % [data.enemy_name, data.attack, data.health]
-
 
 func _on_defeated() -> void:
 	print("Defeated a ", data.enemy_name)
