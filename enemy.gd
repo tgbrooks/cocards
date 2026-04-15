@@ -8,6 +8,8 @@ class_name Enemy extends Node2D
 signal on_hover()
 signal off_hover()
 
+var main: Main
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	draw()
@@ -37,13 +39,13 @@ func _on_action_taken() -> void:
 	# Animate the attack
 	await AnimThread.await_anim_okay()
 	var tween = create_tween()
-	tween.tween_property(self, "rotation_degrees", 30, 0.15/2)
-	tween.tween_property(self, "rotation_degrees", -30, 0.15)
-	tween.tween_property(self, "rotation_degrees", 0, 0.15/2)
-	#tween.tween_property(self, "scale", Vector2(1, 1), 0.15)
+	var target_pos = main.player_position.lerp(global_position, 0.2) # go most of the way to the player
+	tween.tween_property(button, "global_position", target_pos, 0.15)
+	tween.set_ease(Tween.EASE_IN)
+	tween.tween_property(button, "global_position", global_position, 0.15)
+	tween.set_ease(Tween.EASE_OUT)
 	AnimThread.make_blocking_anim_tween(tween)
 	await tween.finished
-
 
 func _draw_action_points(_old: int, new:int) -> void:
 	var ns = "🔳".repeat(new)

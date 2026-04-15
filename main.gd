@@ -119,3 +119,7 @@ func _stack_card(data: CardData, idx: int):
 
 func lookup_card(data: CardData) -> Card:
 	return data_to_card[data]
+
+var player_position: Vector2:
+	get():
+		return player_health_label.global_position

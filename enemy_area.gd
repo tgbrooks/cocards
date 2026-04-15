@@ -10,7 +10,8 @@ var state: GameState:
 	set(value):
 		state = value
 		_on_state_set()
-@onready var main = get_parent()
+
+@onready var main: Main = get_parent()
 
 
 func _process(_delta):
@@ -22,6 +23,7 @@ func _on_state_set():
 func _make_enemy(data: EnemyData):
 	var enemy: Enemy = enemy_scene.instantiate()
 	enemy.data = data
+	enemy.main = main
 	data_to_enemy[data] = enemy
 	add_child(enemy)
 	enemy.button.pressed.connect(on_enemy_pressed.emit.bind(enemy))
