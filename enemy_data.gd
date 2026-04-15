@@ -25,14 +25,21 @@ func take_damage(damage: int) -> void:
 		defeated.emit()
 
 func take_action(state: GameState) -> void:
+	var old = action_points
+	action_points = 0
 	var final_attack = max(attack - current_dodge, 0)
 	var old_dodge = current_dodge
 	current_dodge = 0
 	dodge_changed.emit(old_dodge, current_dodge)
 	state.damage_player(final_attack)
 	action_taken.emit()
+	action_points_changed.emit(old, 0)
+
 
 func gain_dodge(new_dodge: int) -> void:
 	var old = current_dodge
 	current_dodge += new_dodge
 	dodge_changed.emit(old, current_dodge)
+
+func is_alive() -> bool:
+	return health > 0

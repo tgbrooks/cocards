@@ -46,7 +46,7 @@ func make_card_data_by_name(card_name: String, state: GameState) -> CardData:
 		card.suit = Enums.Suit.RED
 		card.upgrades = [CardUpgradeLibrary.make_card_upgrade('damage')]
 	elif card_name == 'chain':
-		card.number = 1
+		card.number = 4
 		card.suit = Enums.Suit.RED
 		card.upgrades = [CardUpgradeLibrary.make_card_upgrade("chain_damage")]
 	elif card_name == 'red twin':

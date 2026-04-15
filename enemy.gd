@@ -33,17 +33,19 @@ func _on_defeated() -> void:
 	tween.tween_property(self, "scale", Vector2(0,0), 1.25)
 	tween.tween_callback(self.queue_free)
 
-func _on_action_taken(main: Main) -> void:
+func _on_action_taken() -> void:
 	# Animate the attack
+	await AnimThread.await_anim_okay()
 	var tween = create_tween()
 	tween.tween_property(self, "rotation_degrees", 30, 0.15/2)
 	tween.tween_property(self, "rotation_degrees", -30, 0.15)
 	tween.tween_property(self, "rotation_degrees", 0, 0.15/2)
 	#tween.tween_property(self, "scale", Vector2(1, 1), 0.15)
+	AnimThread.make_blocking_anim_tween(tween)
 	await tween.finished
 
 
-func _draw_action_points(old: int, new:int) -> void:
+func _draw_action_points(_old: int, new:int) -> void:
 	var ns = "🔳".repeat(new)
 	var empty
 	if (data.action_points_threshold - new > 0):
@@ -52,6 +54,6 @@ func _draw_action_points(old: int, new:int) -> void:
 		empty = ""
 	action_points_label.text = "%s%s" % [ns, empty]
 
-func _draw_dodge(old: int, new: int) -> void:
+func _draw_dodge(_old: int, new: int) -> void:
 	var dodge_str = '🏃'.repeat(new)
 	dodge_label.text = dodge_str

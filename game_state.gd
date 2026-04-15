@@ -22,7 +22,7 @@ func _init() -> void:
 
 func init() -> void:
 	var library = CardLibrary.new()
-	for card_name in ["red one", "green one", "blue two", "green two",  "red three", "blue three",  "chain", "red twin", "blue twin", "green twin", "double_dmg"]:
+	for card_name in ["red one", "green one", "blue one", "red two", "blue two", "green two",  "red three", "blue three", "green three", "chain"]:
 		var card = library.make_card_data_by_name(card_name, self)
 		card_made.emit(card)
 		deck.append(card)
@@ -78,10 +78,8 @@ func gain_enemy_action_points(points: int) -> void:
 		enemy.action_points += points
 		enemy.action_points_changed.emit(old, enemy.action_points)
 		if enemy.action_points >= enemy.action_points_threshold:
-			old = enemy.action_points
-			enemy.action_points = 0
-			await enemy.take_action(self)
-			enemy.action_points_changed.emit(enemy.action_points, 0)
+			if enemy.is_alive():
+				enemy.take_action(self)
 
 
 func damage_player(damage: int) -> void:
