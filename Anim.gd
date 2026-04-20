@@ -14,12 +14,15 @@ func start_blocking_anim():
 
 func release_blocking_anim():
 	blocking_anim_count -= 1
-	assert(blocking_anim_count >= 0, "blocking_anim_count is now negative!")
-	if blocking_anim_count == 0:
+	# Negative values can happen when we force reload the scene for debugging purposes
+	if blocking_anim_count <= 0:
 		anim_done.emit()
+		blocking_anim_count
 
 func await_anim_okay():
-	if blocking_anim_count == 0:
-		return
-	else:
+	while blocking_anim_count > 0:
 		await anim_done
+
+func wipe_anim_lock():
+	blocking_anim_count = 0
+	anim_done.emit()

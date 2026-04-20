@@ -12,11 +12,20 @@ func _on_data_set():
 
 func _on_appended(card_data: CardData) -> void:
 	var card = main.lookup_card(card_data)
-	var old_position = to_local(card.global_position)
+	var old_position = card.global_position
 	if card.get_parent():
 		card.get_parent().remove_child(card)
 	add_child(card)
-	card.position = old_position
+	var to_pos = Vector2(0,0)
+	if old_position == Vector2.ZERO:
+		card.position = to_pos
+	else:
+		card.position = to_local(old_position)
+		var tween: Tween = create_tween()
+		tween.set_ease(Tween.EASE_IN_OUT)
+		tween.tween_property(card, "position", to_pos, 0.25)
+		AnimThread.make_blocking_anim_tween(tween)
+
 
 func _on_pop(card_data: CardData):
 	var card = main.lookup_card(card_data)
@@ -24,15 +33,3 @@ func _on_pop(card_data: CardData):
 	remove_child(card)
 	card.global_position = old_pos
 	return card
-
-func _process(delta):
-	var to_pos = Vector2(0,0)
-	for card in self.get_children():
-		if card is not Card:
-			continue
-		var dist = to_pos.distance_to(card.position)
-		if dist < 1.5:
-			card.position = to_pos
-		else:
-			var factor = 0.0001**delta
-			card.position = to_pos * (1-factor) + card.position*factor

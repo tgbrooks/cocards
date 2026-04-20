@@ -33,23 +33,24 @@ func init() -> void:
 	player_shield_changed.emit(0,0)
 
 func deal_cards():
-	deck.shuffle()
+	await deck.shuffle()
 
 	var i = 0
 	while true:
-		var card = deck.pop()
+		var card = await deck.pop()
 		if not card:
 			break
 		card.flip_card(Enums.CardFace.FRONT)
 		card_stacks[i].append(card)
 		card_stacked.emit(card, i)
 		i = (i + 1) % card_stacks.size()
+		await AnimThread.await_anim_okay()
 
 func play_stack(chain: Array[CardData], enemy: EnemyData) -> void:
 	var result = CardData.compute_chain(chain, enemy, self)
 	for i in range(chain.size()-1,-1,-1):
 		var card = chain[i]
-		play_card(card)
+		await play_card(card)
 	result.apply(chain, enemy, self)
 	gain_enemy_action_points(1)
 
@@ -68,7 +69,7 @@ func play_card(card: CardData) -> void:
 			stack.pop_at(idx)
 			card_played.emit(card)
 			card.flip_card(Enums.CardFace.BACK)
-			deck.append(card)
+			await deck.append(card)
 			return
 	assert(false, "Card not found in deck")
 

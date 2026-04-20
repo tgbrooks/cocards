@@ -1,4 +1,5 @@
 class_name CardStack extends Node2D
+@export var BETWEEN_CARD_HEIGHT: int = 50
 
 var cards: Array[Card]:
 	get():
@@ -16,27 +17,31 @@ func _ready() -> void:
 	background_button.pressed.connect(stack_pressed)
 
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	var curr_height = 0;
-	for i in range(cards.size()):
-		var card = cards[i]
-		var to_pos: Vector2 = Vector2(0, curr_height)
-		var dist = to_pos.distance_to(card.position)
-		if dist < 1.5:
-			card.position = to_pos
-		else:
-			var factor = 0.0001**delta
-			card.position = to_pos * (1-factor) + card.position*factor
-		curr_height += 50 #card.button.size.y + padding
-
 func append(card: Card) -> void:
-	var old_pos = to_local(card.global_position)
+	var curr_height: int = 0
+	for child in get_children():
+		if not child is Card:
+			continue
+		curr_height += BETWEEN_CARD_HEIGHT
+
+	var old_pos = card.global_position
 	var parent = card.get_parent()
 	if parent:
 		parent.remove_child(card)
-	card.position = old_pos
 	add_child(card)
+	
+	var to_pos: Vector2 = Vector2(0, curr_height)
+
+	if old_pos == Vector2.ZERO:
+		card.position = to_pos
+	else:
+		card.position = to_local(old_pos)
+		await AnimThread.await_anim_okay()
+		var tween: Tween = create_tween()
+		tween.set_ease(Tween.EASE_IN_OUT)
+		tween.tween_property(card, "position", to_pos, 0.2)
+		AnimThread.make_blocking_anim_tween(tween)
+
 
 func remove(card: Card):
 	remove_child(card)

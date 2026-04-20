@@ -36,13 +36,20 @@ func _ready() -> void:
 	state.card_played.connect(_on_card_played)
 	enemy_area.on_enemy_pressed.connect(_on_enemy_pressed)
 	enemy_area.on_enemy_hovered.connect(preview_stack_results)
-	
+
 	state.init()
 
-func _process(_delta: float) -> void:
-	if Input.is_key_pressed(KEY_R):
-		# FOR DEBUG PURPOSES, RESTART GAME
-		get_tree().reload_current_scene()
+func _unhandled_input(event: InputEvent) -> void:
+	if event is InputEventKey:
+		if event.pressed and event.keycode == KEY_R:
+			# FOR DEBUG PURPOSES, RESTART GAME
+			get_tree().reload_current_scene()
+			AnimThread.wipe_anim_lock()
+		if event.pressed and event.keycode == KEY_W:
+			# FOR DEBUG PURPOSES, "WIN" THE ROUND
+			for enemy in state.enemies:
+				enemy.take_damage(1000)
+
 
 func cards_activated(cards: Array[Card], card_stack: CardStack) -> void:
 	if not Card.can_chain(cards):
