@@ -16,6 +16,13 @@ func make_enemy_by_name(enemy_name: String, state: GameState) -> EnemyData:
 		enemy.health = 3
 		enemy.attack = 3
 		enemy.action_points_threshold = 4
+	elif enemy_name == 'slime':
+		enemy.health = 10
+		enemy.attack = 3
+	elif enemy_name == 'crow':
+		enemy.health = 1
+		enemy.attack = 1
+		enemy.action_points_threshold = 2
 	else:
 		print("Unrecognized enemy name", enemy_name)
 		return null

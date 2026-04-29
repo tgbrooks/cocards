@@ -5,6 +5,7 @@ class_name GameState extends Resource
 @export var player_shield: int = 0
 @export var deck: DeckData = DeckData.new()
 @export var card_stacks: Array
+@export var level: int = 0
 
 
 signal player_damaged(old_health: int, new_health: int)
@@ -13,6 +14,7 @@ signal enemy_made(enemy: EnemyData)
 signal card_played(card: CardData)
 signal card_stacked(card: CardData, stack_idx: int)
 signal card_made(card: CardData)
+signal level_cleared()
 
 
 func _init() -> void:
@@ -53,6 +55,7 @@ func play_stack(chain: Array[CardData], enemy: EnemyData) -> void:
 		await play_card(card)
 	result.apply(chain, enemy, self)
 	gain_enemy_action_points(1)
+	check_enemies()
 
 	var all_empty = true
 	for cs in card_stacks:
@@ -101,15 +104,33 @@ func gain_shield(shield: int) -> void:
 	player_shield_changed.emit(old, player_shield)
 
 func spawn_enemies() -> void:
+	var level_enemies: Array = [
+		["grunt", "grunt", "mage"],
+		["crow", "crow", "crow", "slime"],
+		["slime", "slime", "slime"],
+	]
 	var enemy_library = EnemyLibrary.new()
-	for _name in ["grunt", "grunt", "mage"]:
+	for _name in level_enemies[level]:
 		var enemy = enemy_library.make_enemy_by_name(_name, self)
 		enemies.append(enemy)
 		enemy_made.emit(enemy)
+	level += 1
 
-		# TODO move this logic to somewhere new (EnemyArea?)
-		#enemy.add_to_group("enemies")
-		#enemy.pressed.connect(main.on_enemy_pressed.bind(enemy))
-		#enemy.on_hover.connect(main.preview_stack_results.bind(enemy))
-		#enemy.off_hover.connect(main.clear_stack_results_preview)
-	#_position_enemies()
+func check_enemies() -> void:
+	var any_alive: bool = false
+	for enemy in enemies:
+		if enemy.is_alive():
+			any_alive = true
+	if not any_alive:
+		advance_level()
+
+func advance_level():
+	level_cleared.emit()
+	for cs: Array in card_stacks:
+		while len(cs) > 0:
+			var card = cs.pop_back()
+			card.flip_card(Enums.CardFace.BACK)
+			await deck.append(card)
+
+	spawn_enemies()
+	deal_cards()

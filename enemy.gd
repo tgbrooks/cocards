@@ -22,7 +22,7 @@ func _ready() -> void:
 	data.damaged.connect(_on_damaged)
 	data.action_taken.connect(_on_action_taken)
 
-func _on_damaged(damage: int):
+func _on_damaged(_damage: int):
 	draw()
 
 func draw():

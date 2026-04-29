@@ -49,6 +49,7 @@ func _unhandled_input(event: InputEvent) -> void:
 			# FOR DEBUG PURPOSES, "WIN" THE ROUND
 			for enemy in state.enemies:
 				enemy.take_damage(1000)
+			state.check_enemies()
 
 
 func cards_activated(cards: Array[Card], card_stack: CardStack) -> void:
