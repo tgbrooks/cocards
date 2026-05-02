@@ -2,7 +2,8 @@
 
 [ext_resource type="Script" uid="uid://do502sjjso8i3" path="res://full_deck_display.gd" id="1_7hs5m"]
 
-[node name="Node2D" type="Node2D" unique_id=474387782]
+[node name="FullDeckDisplay" type="Node2D" unique_id=474387782]
+script = ExtResource("1_7hs5m")
 
 [node name="Label" type="Label" parent="." unique_id=471616180]
 offset_left = 69.0
@@ -11,5 +12,5 @@ offset_right = 143.0
 offset_bottom = 81.0
 text = "Upgrades"
 
-[node name="FullDeckDisplay" type="Node2D" parent="." unique_id=1104367257]
-script = ExtResource("1_7hs5m")
+[node name="CardArea" type="Node2D" parent="." unique_id=401183702]
+position = Vector2(57, 144)

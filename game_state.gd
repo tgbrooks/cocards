@@ -15,6 +15,7 @@ signal card_played(card: CardData)
 signal card_stacked(card: CardData, stack_idx: int)
 signal card_made(card: CardData)
 signal level_cleared()
+signal upgrades_available()
 
 
 func _init() -> void:
@@ -131,6 +132,9 @@ func advance_level():
 			var card = cs.pop_back()
 			card.flip_card(Enums.CardFace.BACK)
 			await deck.append(card)
+
+	upgrades_available.emit()
+	await AnimThread.await_anim_okay()
 
 	spawn_enemies()
 	deal_cards()

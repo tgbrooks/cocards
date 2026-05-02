@@ -13,9 +13,14 @@ var cs_scene = preload("res://card_stack.tscn")
 var card_scene = preload("res://card.tscn")
 
 var data_to_card: Dictionary[CardData, Card] = {}
+var full_deck_display: FullDeckDisplay
 
 func _init() -> void:
 	state = GameState.new()
+	full_deck_display = load("res://full_deck_display.tscn").instantiate()
+	full_deck_display.state = state
+	full_deck_display.visible = false
+	add_child(full_deck_display)
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -36,7 +41,7 @@ func _ready() -> void:
 	state.card_played.connect(_on_card_played)
 	enemy_area.on_enemy_pressed.connect(_on_enemy_pressed)
 	enemy_area.on_enemy_hovered.connect(preview_stack_results)
-
+	
 	state.init()
 
 func _unhandled_input(event: InputEvent) -> void:
