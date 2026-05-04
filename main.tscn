@@ -29,3 +29,5 @@ text = "Player shield:"
 [node name="Deck" parent="." unique_id=1988589314 instance=ExtResource("3_h2yge")]
 position = Vector2(889, 457)
 script = ExtResource("4_1bvp3")
+
+[node name="FullDeckDisplayLayer" type="CanvasLayer" parent="." unique_id=1810491029]

@@ -9,6 +9,7 @@ static func has_twins(cs: Array[CardData]) -> bool:
 
 static func make_card_upgrade(name: String) -> CardUpgradeData:
 	var upgrade: CardUpgradeData = CardUpgradeData.new()
+	upgrade.upgrade_name = name
 	if name == "damage":
 		upgrade.description = "⚔️"
 		upgrade.damage = 1

@@ -6,6 +6,7 @@ class_name GameState extends Resource
 @export var deck: DeckData = DeckData.new()
 @export var card_stacks: Array
 @export var level: int = 0
+@export var upgrades_available: Array[CardUpgradeData] = []
 
 
 signal player_damaged(old_health: int, new_health: int)
@@ -14,8 +15,10 @@ signal enemy_made(enemy: EnemyData)
 signal card_played(card: CardData)
 signal card_stacked(card: CardData, stack_idx: int)
 signal card_made(card: CardData)
+signal card_changed(card: CardData)
 signal level_cleared()
-signal upgrades_available()
+signal upgrade_gained(upgrade: CardUpgradeData)
+signal upgrade_point_reached(card: CardData)
 
 
 func _init() -> void:
@@ -133,8 +136,19 @@ func advance_level():
 			card.flip_card(Enums.CardFace.BACK)
 			await deck.append(card)
 
-	upgrades_available.emit()
+	var upgrade = CardUpgradeLibrary.make_card_upgrade("double_damage")
+	gain_upgrade(upgrade)
+	
+	upgrade_point_reached.emit()
 	await AnimThread.await_anim_okay()
 
 	spawn_enemies()
 	deal_cards()
+
+func gain_upgrade(upgrade: CardUpgradeData):
+	upgrades_available.append(upgrade)
+	upgrade_gained.emit(upgrade)
+
+func apply_upgrade(upgrade: CardUpgradeData, card: CardData):
+	card.upgrades.append(upgrade)
+	card_changed.emit(card)

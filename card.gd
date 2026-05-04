@@ -11,8 +11,21 @@ class_name Card extends Node2D
 @onready var preview: Node2D = $Preview
 @onready var card_back_sprite: Sprite2D = $CardBackSprite
 
+signal pressed
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	button.pressed.connect(_on_pressed)
+
+	button.mouse_entered.connect(_on_hover)
+	button.mouse_exited.connect(_off_hover)
+	
+	data.card_flipped.connect(_on_card_flipped)
+	
+	_render()
+
+
+func _render():
 	number_label.text = "%s" % data.number
 	name_label.text = data.card_name
 	card_sprite.modulate = Util.suit_to_color(data.suit)
@@ -20,18 +33,13 @@ func _ready() -> void:
 	for upgrade in data.upgrades:
 		descriptions.append(upgrade.description)
 	description_label.text = ' '.join(descriptions)
-	button.pressed.connect(_on_pressed)
-
-	button.mouse_entered.connect(_on_hover)
-	button.mouse_exited.connect(_off_hover)
-
+	
 	# Set-up the on-hover preview
-#	preview.position = Vector2(card_sprite.texture.get_width() + 10, -10)
+	for child in preview.get_children():
+		child.queue_free()
 	preview.add_child(card_sprite.duplicate(false))
 	preview.add_child(number_label.duplicate(false))
 	preview.add_child(description_label.duplicate(false))
-	
-	data.card_flipped.connect(_on_card_flipped)
 
 func _process(_delta: float) -> void:
 	# Keep the card preview visible on screen
@@ -42,6 +50,8 @@ func _process(_delta: float) -> void:
 	preview.position.y = min(preview_offset, wsize.y - size - global_loc)
 
 func _on_pressed() -> void:
+	pressed.emit()
+	# TODO: make parent subscribe to pressed instead of this
 	var parent = get_parent()
 	if is_instance_of(parent, CardStack):
 		parent.card_pressed(self)
@@ -70,6 +80,9 @@ func _on_hover():
 
 func _off_hover():
 	preview.visible = false
+
+func trigger_change():
+	_render()
 
 static func can_chain(cards: Array[Card]) -> bool:
 	var card_datas: Array[CardData] = []

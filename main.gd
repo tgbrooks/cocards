@@ -20,10 +20,11 @@ func _init() -> void:
 	full_deck_display = load("res://full_deck_display.tscn").instantiate()
 	full_deck_display.state = state
 	full_deck_display.visible = false
-	add_child(full_deck_display)
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	$FullDeckDisplayLayer.add_child(full_deck_display)
+
 	deck.data = state.deck
 	enemy_area.state = state
 	for i in range(3):
@@ -39,8 +40,10 @@ func _ready() -> void:
 	state.card_made.connect(_make_card)
 	state.card_stacked.connect(_stack_card)
 	state.card_played.connect(_on_card_played)
+	state.card_changed.connect(_on_card_changed)
 	enemy_area.on_enemy_pressed.connect(_on_enemy_pressed)
 	enemy_area.on_enemy_hovered.connect(preview_stack_results)
+	state.upgrade_point_reached.connect(_on_upgrade_point_reached)
 	
 	state.init()
 
@@ -136,3 +139,12 @@ func lookup_card(data: CardData) -> Card:
 var player_position: Vector2:
 	get():
 		return player_health_label.global_position
+
+func _on_upgrade_point_reached():
+	full_deck_display.visible = true
+	await full_deck_display.choose_upgrades()
+	full_deck_display.visible = false
+
+func _on_card_changed(card_data: CardData):
+	var card = lookup_card(card_data)
+	card.trigger_change()

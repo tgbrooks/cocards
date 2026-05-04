@@ -1,17 +1,13 @@
-class_name CardUpgradeData extends Resource
+class_name CardUpgrade extends Button
 
-@export var upgrade_name: String = "upgrade"
-@export var damage: int = 0
-@export var dodge: int = 0
-@export var shield: int = 0
-@export var description: String = "MISSING"
-@export var labels: Array[String] = []
+var data: CardUpgradeData
 
-var first_pass = func(result: StackResults, _enemy: EnemyData, _state: GameState, _cards: Array[CardData]) -> StackResults:
-	result.damage += damage
-	result.shield += shield
-	result.dodge += dodge
-	return result
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	text = data.upgrade_name
 
-var second_pass = func(result: StackResults, _enemy: EnemyData, _state: GameState, _cards: Array[CardData]) -> StackResults:
-	return result
+func select():
+	scale = Vector2(1.2, 1.2)
+
+func unselect():
+	scale = Vector2(1.0, 1.0)

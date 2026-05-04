@@ -5,7 +5,12 @@
 [node name="FullDeckDisplay" type="Node2D" unique_id=474387782]
 script = ExtResource("1_7hs5m")
 
-[node name="Label" type="Label" parent="." unique_id=471616180]
+[node name="ColorRect" type="ColorRect" parent="." unique_id=1791763085]
+offset_right = 1163.0
+offset_bottom = 651.0
+color = Color(0.078431375, 0.101960786, 0.14509805, 1)
+
+[node name="UpgradeLabel" type="Label" parent="." unique_id=471616180]
 offset_left = 69.0
 offset_top = 58.0
 offset_right = 143.0
@@ -14,3 +19,13 @@ text = "Upgrades"
 
 [node name="CardArea" type="Node2D" parent="." unique_id=401183702]
 position = Vector2(57, 144)
+
+[node name="UpgradeArea" type="Node2D" parent="." unique_id=258944073]
+position = Vector2(174, 64)
+
+[node name="OkayButton" type="Button" parent="." unique_id=1446541972]
+offset_left = 758.0
+offset_top = 35.0
+offset_right = 862.0
+offset_bottom = 94.0
+text = "Done"
